@@ -33,46 +33,50 @@ exports.register = function (plugin, options, next) {
             data: null
         };
 
-        if(redis.connected) {
-            redis.get(generateCacheKey(req), function(err, data) {
-                if(err) {
-                    return reply.continue();
-                }
-
-                if(data) {
-                    var cachedValue = JSON.parse(data);
-                    var currentTime = Math.floor(new Date() / 1000);
-                    req.outputCache.data = cachedValue;
-
-                    if(cachedValue.expiresOn > currentTime) {
-                        req.outputCache.isStale = false;
-
-                        req.route.settings.handler = function(__, cacheReply) {
-                            var response  = cacheReply(cachedValue.payload);
-                            response.code(cachedValue.statusCode);
-
-                            var keys = Object.keys(cachedValue.headers);
-                            for(var i = 0; i < keys.length; i++) {
-                                var key = keys[i];
-                                response.header(key, cachedValue.headers[key]);
-                            }
-                        };
-                    }
-                }
-
-                return reply.continue();
-            });
-        } else {
+        if(redis.connected === false) {
             return reply.continue();
         }
+
+        redis.get(generateCacheKey(req), function(err, data) {
+            if(err) {
+                return reply.continue();
+            }
+
+            if(data) {
+                var cachedValue = JSON.parse(data);
+                var currentTime = Math.floor(new Date() / 1000);
+                req.outputCache.data = cachedValue;
+
+                if(cachedValue.expiresOn > currentTime) {
+                    req.outputCache.isStale = false;
+
+                    req.route.settings.handler = function(__, cacheReply) {
+                        var response  = cacheReply(cachedValue.payload);
+                        response.code(cachedValue.statusCode);
+
+                        var keys = Object.keys(cachedValue.headers);
+                        for(var i = 0; i < keys.length; i++) {
+                            var key = keys[i];
+                            response.header(key, cachedValue.headers[key]);
+                        }
+                    };
+                }
+            }
+
+            return reply.continue();
+        });
     });
 
     plugin.ext('onPreResponse', function(req, reply) {
+        if(redis.connected === false) {
+            return reply.continue();
+        }
+
         if(isCacheable(req) === false) {
             return reply.continue();
         }
 
-        if(req.outputCache.isStale && req.response.statusCode && redis.connected) {
+        if(req.outputCache.isStale && req.response.statusCode) {
             options.onCacheMiss();
 
             var cacheValue = {
