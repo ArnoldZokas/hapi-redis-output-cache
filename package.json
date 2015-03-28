@@ -1,0 +1,42 @@
+{
+  "name": "hapi-redis-output-cache",
+  "version": "0.1.0",
+  "description": "Redis-backed output cache module for Hapi",
+  "engines": {
+    "node": "0.12.0"
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "grunt && vagrant up && mocha --reporter spec --timeout 5s"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/ArnoldZokas/hapi-redis-output-cache"
+  },
+  "keywords": [
+    "hapi",
+    "redis",
+    "cache"
+  ],
+  "author": "Arnold Zokas",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ArnoldZokas/hapi-redis-output-cache/issues"
+  },
+  "homepage": "https://github.com/ArnoldZokas/hapi-redis-output-cache",
+  "dependencies": {
+    "hoek": "^2.12.0",
+    "joi": "^6.0.8",
+    "redis": "^0.12.1"
+  },
+  "devDependencies": {
+    "expect.js": "^0.3.1",
+    "grunt": "0.4.5",
+    "grunt-cli": "0.1.13",
+    "grunt-contrib-jshint": "0.11.0",
+    "hoek": "^2.12.0",
+    "jshint-stylish": "1.0.1",
+    "load-grunt-tasks": "3.1.0",
+    "time-grunt": "1.1.0"
+  }
+}
