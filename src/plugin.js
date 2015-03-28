@@ -13,6 +13,7 @@ exports.register = function (plugin, options, next) {
     }
 
     var redis = require('redis').createClient(options.port || 6379, options.host, redisOptions);
+    redis.on('error', options.onError || function() {});
 
     var isCacheable = function(req) {
         if(!req.route.settings.tags) {
@@ -32,7 +33,7 @@ exports.register = function (plugin, options, next) {
             data: null
         };
 
-        //if(redis.connected) {
+        if(redis.connected) {
             redis.get(generateCacheKey(req), function(err, data) {
                 if(err) {
                     return reply.continue();
@@ -61,9 +62,9 @@ exports.register = function (plugin, options, next) {
 
                 return reply.continue();
             });
-        //} else {
-        //    return reply.continue();
-        //}
+        } else {
+            return reply.continue();
+        }
     });
 
     plugin.ext('onPreResponse', function(req, reply) {
