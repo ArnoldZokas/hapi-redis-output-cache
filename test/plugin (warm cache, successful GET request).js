@@ -26,7 +26,7 @@ var server = {
         }
     };
 
-describe('plugin (warm cache, successful request)', function() {
+describe('plugin (warm cache, successful GET request)', function() {
     before(function(done) {
         redis.set('get|/resources/1', JSON.stringify({
             statusCode: 200,

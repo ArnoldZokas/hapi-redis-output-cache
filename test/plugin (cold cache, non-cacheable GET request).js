@@ -27,7 +27,7 @@ var server = {
         }
     };
 
-describe('plugin (cold cache, non-cacheable request)', function() {
+describe('plugin (cold cache, non-cacheable GET request)', function() {
     before(function(done) {
         redis.del('get|/resources/1');
 
