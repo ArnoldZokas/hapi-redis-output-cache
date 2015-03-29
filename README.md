@@ -5,10 +5,38 @@
 
 [![NPM](https://nodei.co/npm/hapi-redis-output-cache.png?downloads=true&stars=true)](https://nodei.co/npm/hapi-redis-output-cache)
 
-**TODO**
+## Usage
+```
+var server = new (require('hapi').Server)();
+server.connection({ port: 3000 });
+
+server.register([
+    {
+        register: require('hapi-redis-output-cache'),
+        options: {
+            host: '127.0.0.1',
+            ttl: 60
+        }
+    }
+], function (err) {
+    if (err) {
+        console.error('Failed to load plugin:', err);
+    }
+
+    server.start();
+    });
+});
+```
+
+## Configuration
+- **host** - hostname or IP address of the redis server
+- **port** - *(optional)* port of the redis server; defaults to 6379
+- **ttl** - lifespan of a cached response, in seconds
+- **onCacheMiss** - *(optional)* function which is invoked on each cache write; useful for tracking cache miss rates in a service
+- **onError** - *(optional)* function which is invoked on each redis error
 
 ## Release History
-* **v0.1.0** (2015-XX-XX)
+* **v0.1.0** (2015-03-29)
  * initial release
 
 ##Contributors
