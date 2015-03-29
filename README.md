@@ -28,7 +28,6 @@ server.register([
     }
 
     server.start();
-    });
 });
 ```
 
