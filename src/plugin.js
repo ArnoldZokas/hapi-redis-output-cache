@@ -16,6 +16,10 @@ exports.register = function (plugin, options, next) {
     redis.on('error', options.onError || function() {});
 
     var isCacheable = function(req) {
+        if(req.route.method !== 'get') {
+            return false;
+        }
+
         if(!req.route.settings.tags) {
             return true;
         }
