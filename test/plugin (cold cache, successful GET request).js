@@ -10,6 +10,9 @@ var originalHandler           = function() {},
 
 var requestPrototype = {
         route: {
+            headers: {
+                accept: 'application/json'
+            },
             method: 'get',
             settings: {
                 handler: originalHandler
@@ -28,7 +31,7 @@ var server = {
 
 describe('plugin (cold cache, successful GET request)', function() {
     before(function(done) {
-        redis.del('get|/resources/1');
+        redis.del('get|/resources/1|{\"accept\":\"application/json\"}');
 
         plugin.register(server, {
             host: '127.0.0.1',
@@ -73,7 +76,7 @@ describe('plugin (cold cache, successful GET request)', function() {
 
                 server.onPreResponse(req, {
                     'continue': function() {
-                        redis.get('get|/resources/1', function(err, data) {
+                        redis.get('get|/resources/1|{\"accept\":\"application/json\"}', function(err, data) {
                             cachedResponse = JSON.parse(data);
                             done();
                         });

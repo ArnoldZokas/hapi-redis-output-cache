@@ -10,6 +10,9 @@ var originalHandler           = function() {},
 
 var requestPrototype = {
         route: {
+            headers: {
+                accept: 'application/json'
+            },
             method: 'get',
             settings: {
                 handler: originalHandler
@@ -28,7 +31,7 @@ var server = {
 
 describe('plugin (warm cache, successful GET request)', function() {
     before(function(done) {
-        redis.set('get|/resources/1', JSON.stringify({
+        redis.set('get|/resources/1|{\"accept\":\"application/json\"}', JSON.stringify({
             statusCode: 200,
             headers: { 'content-type': 'application/json' },
             payload: { test: true },

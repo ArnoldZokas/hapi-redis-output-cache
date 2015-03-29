@@ -10,6 +10,9 @@ var originalHandler           = function() {},
 
 var requestPrototype = {
         route: {
+            headers: {
+                accept: 'application/json'
+            },
             method: 'post',
             settings: {
                 handler: originalHandler

@@ -28,7 +28,11 @@ exports.register = function (plugin, options, next) {
     };
 
     var generateCacheKey = function(req) {
-        return req.route.method + '|' + req.url.path.toLowerCase();
+        var method  = req.route.method,
+            path    = req.url.path.toLowerCase(),
+            headers = JSON.stringify(req.route.headers);
+
+        return method + '|' + path + '|' + headers;
     };
 
     plugin.ext('onPreHandler', function(req, reply) {
