@@ -19,7 +19,8 @@ server.register([
         register: require('hapi-redis-output-cache'),
         options: {
             host: '127.0.0.1',
-            ttl: 60
+            staleIn: 30,
+            expiresIn: 60
         }
     }
 ], function (err) {
@@ -40,13 +41,21 @@ server.register([
 - **onCacheMiss** - *(optional)* function which is invoked on each cache write; useful for tracking cache miss rates in a service
 - **onError** - *(optional)* function which is invoked on each Redis error
 
+## Miscellaneous
+Output cache metadata is injected into each request and can be access via `req.outputCache`:
+- **isStale**: boolean value indicating whether the cache is stale
+- **data**: object representing cached response (available even when stale)
+
 ## Release History
-* **v0.2.1** (2015-03-30)
- * fixed handling of responses with failed joi validation
-* **v0.2.0** (2015-03-30)
- * fixed cache key algorithm
-* **v0.1.0** (2015-03-29)
- * initial release
+- **v1.0.0** (2015-03-30)
+ - implemented a more sophisticated *freshness* mechanism which allows stale and expired data to be handled separately
+ - implemented a whitelist of request headers to be used for generating cache key to provide more fine-grained control over keys
+- **v0.2.1** (2015-03-30)
+ - fixed handling of responses with failed joi validation
+- **v0.2.0** (2015-03-30)
+ - fixed cache key algorithm
+- **v0.1.0** (2015-03-29)
+ - initial release
 
 ## Contributors
 * [@orlando80](https://github.com/orlando80)
