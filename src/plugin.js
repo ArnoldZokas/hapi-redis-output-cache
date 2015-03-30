@@ -84,7 +84,7 @@ exports.register = function (plugin, options, next) {
             return reply.continue();
         }
 
-        if(req.outputCache.isStale && req.response.statusCode) {
+        if(req.outputCache && req.outputCache.isStale && req.response.statusCode) {
             options.onCacheMiss();
 
             var cacheValue = {

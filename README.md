@@ -39,6 +39,8 @@ server.register([
 - **onError** - *(optional)* function which is invoked on each redis error
 
 ## Release History
+* **v0.2.1** (2015-03-30)
+ * fixed handling of responses with failed joi validation
 * **v0.2.0** (2015-03-30)
  * fixed cache key algorithm
 * **v0.1.0** (2015-03-29)
