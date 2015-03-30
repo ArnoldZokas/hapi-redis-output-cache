@@ -31,6 +31,8 @@ var server = {
 
 describe('plugin (cold cache, successful POST request)', function() {
     before(function(done) {
+        redis.flushdb();
+
         plugin.register(server, {
             host: '127.0.0.1',
             port: 1234,

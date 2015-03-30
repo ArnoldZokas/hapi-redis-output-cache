@@ -32,7 +32,7 @@ var server = {
 
 describe('plugin (cold cache, non-cacheable GET request)', function() {
     before(function(done) {
-        redis.del('get|/resources/1|{\"accept\":\"application/json\"}');
+        redis.flushdb();
 
         plugin.register(server, {
             host: '127.0.0.1',

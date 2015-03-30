@@ -31,6 +31,8 @@ var server = {
 
 describe('plugin (warm cache, successful GET request)', function() {
     before(function(done) {
+        redis.flushdb();
+
         redis.set('get|/resources/1|{\"accept\":\"application/json\"}', JSON.stringify({
             statusCode: 200,
             headers: { 'content-type': 'application/json' },
@@ -48,7 +50,7 @@ describe('plugin (warm cache, successful GET request)', function() {
         });
     });
 
-    describe('given cold cache', function() {
+    describe('given warm cache', function() {
         var req = Hoek.clone(requestPrototype);
 
         describe('when onPreHandler is executed', function() {
