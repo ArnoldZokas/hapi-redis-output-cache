@@ -82,6 +82,13 @@ describe('plugin (cold cache, successful GET request)', function() {
                 });
             });
 
+            it('should set ttl on cache entry', function(done) {
+                redis.ttl('get|/resources/1|', function(err, data) {
+                    expect(data).to.equal(60);
+                    done();
+                });
+            });
+
             it('should invoke onCacheMiss handler', function() {
                 expect(onCacheMissHandlerInvoked).to.equal(true);
             });

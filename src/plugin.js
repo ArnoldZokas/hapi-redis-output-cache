@@ -113,7 +113,7 @@ exports.register = function (plugin, options, next) {
                 expiresOn: Math.floor(new Date() / 1000) + options.staleIn
             };
 
-            redis.set(generateCacheKey(req), JSON.stringify(cacheValue));
+            redis.setex(generateCacheKey(req), options.expiresIn, JSON.stringify(cacheValue));
         }
 
         reply.continue();
