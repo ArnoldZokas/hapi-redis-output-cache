@@ -40,7 +40,8 @@ describe('plugin (dead cache, successful GET request)', function() {
         plugin.register(server, {
             host: '127.0.0.1',
             port: 9999,
-            ttl: 60,
+            staleIn: 60,
+            expiresIn: 60,
             onCacheMiss: function() { onCacheMissHandlerInvoked = true; }
         }, function() {
             done();

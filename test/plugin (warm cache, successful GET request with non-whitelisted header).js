@@ -45,7 +45,8 @@ describe('plugin (warm cache, successful GET request with non-whitelisted header
             host: '127.0.0.1',
             port: 1234,
             varyByHeaders: ['accept'],
-            ttl: 60,
+            staleIn: 60,
+            expiresIn: 60,
             onCacheMiss: function() { onCacheMissHandlerInvoked = true; }
         }, function() {
             done();
