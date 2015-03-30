@@ -9,25 +9,25 @@ var originalHandler           = function() {},
     onCacheMissHandlerInvoked = false;
 
 var requestPrototype = {
-    route: {
         headers: {
             accept: 'application/json'
         },
-        method: 'get',
-        settings: {
-            handler: originalHandler
+        route: {
+            method: 'get',
+            settings: {
+                handler: originalHandler
+            }
+        },
+        url: {
+            path: '/resources/1'
         }
-    },
-    url: {
-        path: '/resources/1'
-    }
-};
+    };
 
 var server = {
-    ext: function(name, handler) {
-        this[name] = handler;
-    }
-};
+        ext: function(name, handler) {
+            this[name] = handler;
+        }
+    };
 
 describe('plugin (cold cache, successful GET request)', function() {
     before(function(done) {

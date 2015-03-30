@@ -9,10 +9,10 @@ var originalHandler           = function() {},
     onCacheMissHandlerInvoked = false;
 
 var requestPrototype = {
+        headers: {
+            accept: 'application/json'
+        },
         route: {
-            headers: {
-                accept: 'application/json'
-            },
             method: 'post',
             settings: {
                 handler: originalHandler

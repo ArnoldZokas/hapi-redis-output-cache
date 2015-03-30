@@ -30,7 +30,7 @@ exports.register = function (plugin, options, next) {
     var generateCacheKey = function(req) {
         var method  = req.route.method,
             path    = req.url.path.toLowerCase(),
-            headers = JSON.stringify(req.route.headers);
+            headers = JSON.stringify(req.headers);
 
         return method + '|' + path + '|' + headers;
     };
