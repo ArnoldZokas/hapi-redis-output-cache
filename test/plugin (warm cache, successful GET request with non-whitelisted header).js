@@ -9,6 +9,10 @@ var originalHandler           = function() {},
     onCacheMissHandlerInvoked = false;
 
 var requestPrototype = {
+        headers: {
+            accept: 'application/json',
+            connection: 'keep-alive'
+        },
         route: {
             method: 'get',
             settings: {
@@ -26,11 +30,11 @@ var server = {
         }
     };
 
-describe('plugin (dead cache, successful GET request)', function() {
+describe('plugin (warm cache, successful GET request with non-whitelisted header)', function() {
     before(function(done) {
         redis.flushdb();
 
-        redis.set('get|/resources/1|{\"accept\":\"application/json\"}', JSON.stringify({
+        redis.set('get|/resources/1|accept=application/json', JSON.stringify({
             statusCode: 200,
             headers: { 'content-type': 'application/json' },
             payload: { test: true },
@@ -39,7 +43,8 @@ describe('plugin (dead cache, successful GET request)', function() {
 
         plugin.register(server, {
             host: '127.0.0.1',
-            port: 9999,
+            port: 1234,
+            varyByHeaders: ['accept'],
             ttl: 60,
             onCacheMiss: function() { onCacheMissHandlerInvoked = true; }
         }, function() {
@@ -47,7 +52,7 @@ describe('plugin (dead cache, successful GET request)', function() {
         });
     });
 
-    describe('given dead cache', function() {
+    describe('given warm cache', function() {
         var req = Hoek.clone(requestPrototype);
 
         describe('when onPreHandler is executed', function() {
@@ -55,16 +60,29 @@ describe('plugin (dead cache, successful GET request)', function() {
                 server.onPreHandler(req, { 'continue': function() { done(); } });
             });
 
-            it('should mark output cache as stale', function() {
-                expect(req.outputCache.isStale).to.equal(true);
+            it('should mark output cache as live', function() {
+                expect(req.outputCache.isStale).to.equal(false);
             });
 
-            it('should set output cache data to null', function() {
-                expect(req.outputCache.data).to.equal(null);
+            it('should set output cache data to cached value', function() {
+                expect(req.outputCache.data.statusCode).to.equal(200);
             });
 
-            it('should not override original route handler', function() {
-                expect(req.route.settings.handler).to.equal(originalHandler);
+            it('should override original route handler', function(done) {
+                req.route.settings.handler(null, function(payload) {
+                    expect(payload.test).to.equal(true);
+
+                    return {
+                        code: function(code) {
+                            expect(code).to.equal(200);
+                        },
+                        header: function(key, value) {
+                            expect(key).to.equal('content-type');
+                            expect(value).to.equal('application/json');
+                            done();
+                        }
+                    };
+                });
             });
         });
 

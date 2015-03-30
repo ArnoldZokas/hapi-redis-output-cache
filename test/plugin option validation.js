@@ -20,6 +20,14 @@ describe('plugin option validation', function() {
         });
     });
 
+    describe('given non-array varyByHeaders', function() {
+        it('should return error', function () {
+            plugin.register(null, { host: '127.0.0.1', varyByHeaders: 'string', ttl: 1 }, function(err) {
+                expect(err.toString()).to.equal('ValidationError: child "varyByHeaders" fails because ["varyByHeaders" must be an array]');
+            });
+        });
+    });
+
     describe('given null ttl', function() {
         it('should return error', function () {
             plugin.register(null, { host: '127.0.0.1' }, function(err) {

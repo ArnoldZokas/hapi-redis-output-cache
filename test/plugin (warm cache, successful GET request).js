@@ -9,9 +9,6 @@ var originalHandler           = function() {},
     onCacheMissHandlerInvoked = false;
 
 var requestPrototype = {
-        headers: {
-            accept: 'application/json'
-        },
         route: {
             method: 'get',
             settings: {
@@ -33,7 +30,7 @@ describe('plugin (warm cache, successful GET request)', function() {
     before(function(done) {
         redis.flushdb();
 
-        redis.set('get|/resources/1|{\"accept\":\"application/json\"}', JSON.stringify({
+        redis.set('get|/resources/1|', JSON.stringify({
             statusCode: 200,
             headers: { 'content-type': 'application/json' },
             payload: { test: true },

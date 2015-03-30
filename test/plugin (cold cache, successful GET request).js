@@ -9,9 +9,6 @@ var originalHandler           = function() {},
     onCacheMissHandlerInvoked = false;
 
 var requestPrototype = {
-        headers: {
-            accept: 'application/json'
-        },
         route: {
             method: 'get',
             settings: {
@@ -76,7 +73,7 @@ describe('plugin (cold cache, successful GET request)', function() {
 
                 server.onPreResponse(req, {
                     'continue': function() {
-                        redis.get('get|/resources/1|{\"accept\":\"application/json\"}', function(err, data) {
+                        redis.get('get|/resources/1|', function(err, data) {
                             cachedResponse = JSON.parse(data);
                             done();
                         });

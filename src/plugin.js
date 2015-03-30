@@ -27,10 +27,29 @@ exports.register = function (plugin, options, next) {
         return req.route.settings.tags.indexOf('non-cacheable') === -1;
     };
 
+    var getWhitelistedHeaders = function(requestHeaders, whitelist) {
+        if((whitelist || []).length === 0) {
+            return [];
+        }
+
+        var result = [];
+        Object.keys(requestHeaders).forEach(function(header) {
+            header = header.toLowerCase();
+
+            if(whitelist.indexOf(header) > -1) {
+                result.push(header + '=' + requestHeaders[header]);
+            }
+        });
+
+        return result;
+    };
+
     var generateCacheKey = function(req) {
         var method  = req.route.method,
             path    = req.url.path.toLowerCase(),
-            headers = JSON.stringify(req.headers);
+            headers = getWhitelistedHeaders(req.headers, options.varyByHeaders).join('&');
+
+        console.log(headers);
 
         return method + '|' + path + '|' + headers;
     };

@@ -34,6 +34,7 @@ server.register([
 ## Configuration
 - **host** - hostname or IP address of the redis server
 - **port** - *(optional)* port of the redis server; defaults to 6379
+- **varyByHeaders** - *(optional)* an array of headers to be used for generating cache key; defaults no none
 - **ttl** - lifespan of a cached response, in seconds
 - **onCacheMiss** - *(optional)* function which is invoked on each cache write; useful for tracking cache miss rates in a service
 - **onError** - *(optional)* function which is invoked on each redis error
