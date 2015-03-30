@@ -110,7 +110,7 @@ exports.register = function (plugin, options, next) {
                 statusCode: req.response.statusCode,
                 headers: req.response.headers,
                 payload: req.response.source,
-                expiresOn: Math.floor(new Date() / 1000) + options.ttl
+                expiresOn: Math.floor(new Date() / 1000) + options.staleIn
             };
 
             redis.set(generateCacheKey(req), JSON.stringify(cacheValue));
