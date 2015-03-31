@@ -49,8 +49,6 @@ exports.register = function (plugin, options, next) {
             path    = req.url.path.toLowerCase(),
             headers = getWhitelistedHeaders(req.headers, options.varyByHeaders).join('&');
 
-        console.log(headers);
-
         return method + '|' + path + '|' + headers;
     };
 
