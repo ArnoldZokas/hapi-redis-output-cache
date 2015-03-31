@@ -6,8 +6,6 @@ var joi = require('joi');
 var redisOptions = { retry_max_delay: 15000 };
 /* jshint +W106 */
 
-var routeHandlers = [];
-
 exports.register = function (plugin, options, next) {
     var validation = joi.validate(options, require('./schema'));
     if(validation.error) {
@@ -60,12 +58,17 @@ exports.register = function (plugin, options, next) {
             data: null
         };
 
-        if(redis.connected === false) {
-            req.route.settings.handler = routeHandlers[req.route.path] || req.route.settings.handler;
+        if(isCacheable(req) === false) {
             return reply.continue();
         }
 
-        redis.get(generateCacheKey(req), function(err, data) {
+        if(redis.connected === false) {
+            return reply.continue();
+        }
+
+        var cacheKey = generateCacheKey(req);
+
+        redis.get(cacheKey, function(err, data) {
             if(err) {
                 return reply.continue();
             }
@@ -78,20 +81,17 @@ exports.register = function (plugin, options, next) {
                 if(cachedValue.expiresOn > currentTime) {
                     req.outputCache.isStale = false;
 
-                    routeHandlers[req.route.path] = req.route.settings.handler;
-                    req.route.settings.handler = function(__, cacheReply) {
-                        var response  = cacheReply(cachedValue.payload);
-                        response.code(cachedValue.statusCode);
+                    var response  = reply(cachedValue.payload);
+                    response.code(cachedValue.statusCode);
 
-                        var keys = Object.keys(cachedValue.headers);
-                        for(var i = 0; i < keys.length; i++) {
-                            var key = keys[i];
-                            response.header(key, cachedValue.headers[key]);
-                        }
-                    };
+                    var keys = Object.keys(cachedValue.headers);
+                    for(var i = 0; i < keys.length; i++) {
+                        var key = keys[i];
+                        response.header(key, cachedValue.headers[key]);
+                    }
+
+                    return;
                 }
-            } else {
-                req.route.settings.handler = routeHandlers[req.route.path] || req.route.settings.handler;
             }
 
             return reply.continue();

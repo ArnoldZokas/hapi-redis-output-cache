@@ -47,7 +47,14 @@ describe('plugin (cold cache, non-cacheable GET request)', function() {
 
         describe('when onPreHandler is executed', function() {
             before(function(done) {
-                server.onPreHandler(req, { 'continue': function() { done(); } });
+                var reply = function() {
+                    return {
+                        'code': function() {},
+                        'header': function() {}
+                    };
+                };
+                reply.continue = function() { done(); };
+                server.onPreHandler(req, reply);
             });
 
             it('should mark output cache as stale', function() {
