@@ -47,6 +47,8 @@ Output cache metadata is injected into each request and can be access via `req.o
 - **data**: object representing cached response (available even when stale)
 
 ## Release History
+- **v1.0.3** (2015-03-31)
+ - bug fixes
 - **v1.0.0** (2015-03-30)
  - implemented a more sophisticated *freshness* mechanism which allows stale and expired data to be handled separately
  - implemented a whitelist of request headers to be used for generating cache key to provide more fine-grained control over keys
