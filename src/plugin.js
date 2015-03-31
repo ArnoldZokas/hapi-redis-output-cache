@@ -61,7 +61,7 @@ exports.register = function (plugin, options, next) {
         };
 
         if(redis.connected === false) {
-            req.route.settings.handler = routeHandlers[req.route.path] || req.route.settings.handler
+            req.route.settings.handler = routeHandlers[req.route.path] || req.route.settings.handler;
             return reply.continue();
         }
 
