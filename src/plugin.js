@@ -108,7 +108,7 @@ exports.register = function (plugin, options, next) {
         }
 
         if(req.outputCache && req.outputCache.isStale && req.response.statusCode) {
-            options.onCacheMiss();
+            options.onCacheMiss(req);
 
             var cacheValue = {
                 statusCode: req.response.statusCode,
