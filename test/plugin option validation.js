@@ -75,4 +75,12 @@ describe('plugin option validation', function() {
             });
         });
     });
+
+    describe('given invalid partition', function() {
+        it('should return error', function () {
+            plugin.register(null, { host: '127.0.0.1', staleIn: 1, expiresIn: 1, partition: function(){} }, function(err) {
+                expect(err.toString()).to.equal('ValidationError: child "partition" fails because ["partition" must be a string]');
+            });
+        });
+    });
 });

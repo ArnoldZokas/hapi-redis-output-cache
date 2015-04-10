@@ -81,7 +81,7 @@ describe('plugin (cold cache, successful POST request)', function() {
 
                 server.onPreResponse(req, {
                     'continue': function() {
-                        redis.get('post|/resources/1', function(err, data) {
+                        redis.get('|post|/resources/1', function(err, data) {
                             cachedResponse = data;
                             done();
                         });
