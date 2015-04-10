@@ -30,7 +30,7 @@ describe('plugin (stale cache, successful GET request)', function() {
     before(function(done) {
         redis.flushdb();
 
-        redis.set('get|/resources/1|', JSON.stringify({
+        redis.set('|get|/resources/1|', JSON.stringify({
             statusCode: 200,
             headers: { 'content-type': 'application/json' },
             payload: { test: true },
@@ -88,7 +88,7 @@ describe('plugin (stale cache, successful GET request)', function() {
 
                 server.onPreResponse(req, {
                     'continue': function() {
-                        redis.get('get|/resources/1|', function(err, data) {
+                        redis.get('|get|/resources/1|', function(err, data) {
                             cachedResponse = JSON.parse(data);
                             done();
                         });
@@ -97,7 +97,7 @@ describe('plugin (stale cache, successful GET request)', function() {
             });
 
             it('should set ttl on cache entry', function(done) {
-                redis.ttl('get|/resources/1|', function(err, data) {
+                redis.ttl('|get|/resources/1|', function(err, data) {
                     expect(data).to.equal(60);
                     done();
                 });

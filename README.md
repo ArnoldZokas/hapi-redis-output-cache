@@ -36,6 +36,7 @@ server.register([
 - **host** - hostname or IP address of the Redis server
 - **port** - *(optional)* port of the Redis server; defaults to 6379
 - **varyByHeaders** - *(optional)* an array of headers to be used for generating cache key; defaults no none
+- **partition** - *(optional)* string to prefix cache keys with, useful for shared redis instances
 - **staleIn** - number of seconds until the cached response will be considered stale and marked for regeneration
 - **expiresIn** - number of seconds until the cached response will be purged from Redis
 - **onCacheMiss** - *(optional)* `function(request){ ... }` invoked on each cache write; useful for tracking cache miss rates in a service

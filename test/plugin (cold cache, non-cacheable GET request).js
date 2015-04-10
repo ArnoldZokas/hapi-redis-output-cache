@@ -82,7 +82,7 @@ describe('plugin (cold cache, non-cacheable GET request)', function() {
 
                 server.onPreResponse(req, {
                     'continue': function() {
-                        redis.get('get|/resources/1', function(err, data) {
+                        redis.get('|get|/resources/1', function(err, data) {
                             cachedResponse = data;
                             done();
                         });

@@ -81,7 +81,7 @@ describe('plugin (cold cache, successful GET request)', function() {
 
                 server.onPreResponse(req, {
                     'continue': function() {
-                        redis.get('get|/resources/1|', function(err, data) {
+                        redis.get('|get|/resources/1|', function(err, data) {
                             cachedResponse = JSON.parse(data);
                             done();
                         });
@@ -90,7 +90,7 @@ describe('plugin (cold cache, successful GET request)', function() {
             });
 
             it('should set ttl on cache entry', function(done) {
-                redis.ttl('get|/resources/1|', function(err, data) {
+                redis.ttl('|get|/resources/1|', function(err, data) {
                     expect(data).to.equal(60);
                     done();
                 });
