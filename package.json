@@ -1,6 +1,6 @@
 {
   "name": "hapi-redis-output-cache",
-  "version": "1.0.3",
+  "version": "2.0.0",
   "description": "Redis-backed output cache plugin for Hapi",
   "engines": {
     "node": "0.12.0"
