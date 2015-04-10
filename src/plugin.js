@@ -49,7 +49,7 @@ exports.register = function (plugin, options, next) {
             path    = req.url.path.toLowerCase(),
             headers = getWhitelistedHeaders(req.headers, options.varyByHeaders).join('&');
 
-        return method + '|' + path + '|' + headers;
+        return [options.partition, method, path, headers].join('|');
     };
 
     plugin.ext('onPreHandler', function(req, reply) {
