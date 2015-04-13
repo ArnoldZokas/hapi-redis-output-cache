@@ -1,6 +1,7 @@
 'use strict';
 
 var joi = require('joi');
+var hoek = require('hoek');
 
 /* jshint -W106 */
 var redisOptions = { retry_max_delay: 15000 };
@@ -12,6 +13,13 @@ exports.register = function (plugin, options, next) {
         return next(validation.error);
     }
 
+    var routeDefaults = {
+      varyByHeaders: options.varyByHeaders,
+      staleIn: options.staleIn,
+      expiresIn: options.expiresIn,
+      partition: options.partition
+    };
+
     var redis = require('redis').createClient(options.port || 6379, options.host, redisOptions);
     redis.on('error', options.onError || function() {});
 
@@ -20,11 +28,9 @@ exports.register = function (plugin, options, next) {
             return false;
         }
 
-        if(!req.route.settings.tags) {
-            return true;
-        }
+        var pluginSettings = req.route.settings.plugins['hapi-redis-output-cache'];
 
-        return req.route.settings.tags.indexOf('non-cacheable') === -1;
+        return pluginSettings ? pluginSettings.cacheable : false;
     };
 
     var getWhitelistedHeaders = function(requestHeaders, whitelist) {
@@ -44,12 +50,12 @@ exports.register = function (plugin, options, next) {
         return result;
     };
 
-    var generateCacheKey = function(req) {
+    var generateCacheKey = function(req, routeSettings) {
         var method  = req.route.method,
             path    = req.url.path.toLowerCase(),
-            headers = getWhitelistedHeaders(req.headers, options.varyByHeaders).join('&');
+            headers = getWhitelistedHeaders(req.headers, routeSettings.varyByHeaders).join('&');
 
-        return [options.partition, method, path, headers].join('|');
+        return [routeSettings.partition, method, path, headers].join('|');
     };
 
     plugin.ext('onPreHandler', function(req, reply) {
@@ -66,7 +72,8 @@ exports.register = function (plugin, options, next) {
             return reply.continue();
         }
 
-        var cacheKey = generateCacheKey(req);
+        var routeSettings = hoek.applyToDefaults(routeDefaults, req.route.settings.plugins['hapi-redis-output-cache']);
+        var cacheKey = generateCacheKey(req, routeSettings);
 
         redis.get(cacheKey, function(err, data) {
             if(err) {
@@ -110,14 +117,17 @@ exports.register = function (plugin, options, next) {
         if(req.outputCache && req.outputCache.isStale && req.response.statusCode) {
             options.onCacheMiss(req);
 
+            var routeSettings = hoek.applyToDefaults(routeDefaults, req.route.settings.plugins['hapi-redis-output-cache']);
+
             var cacheValue = {
                 statusCode: req.response.statusCode,
                 headers: req.response.headers,
                 payload: req.response.source,
-                expiresOn: Math.floor(new Date() / 1000) + options.staleIn
+                expiresOn: Math.floor(new Date() / 1000) + routeSettings.staleIn
             };
 
-            redis.setex(generateCacheKey(req), options.expiresIn, JSON.stringify(cacheValue));
+            var cacheKey = generateCacheKey(req, routeSettings);
+            redis.setex(cacheKey, routeSettings.expiresIn, JSON.stringify(cacheValue));
         }
 
         reply.continue();
