@@ -20,6 +20,22 @@ describe('plugin option validation', function() {
         });
     });
 
+    describe('given invalid port', function() {
+        it('should return error', function () {
+            plugin.register(null, { host: '127.0.0.1', port: 0, staleIn: 1, expiresIn: 1 }, function(err) {
+                expect(err.toString()).to.equal('ValidationError: child "port" fails because ["port" must be larger than or equal to 1]');
+            });
+        });
+    });
+
+    describe('given invalid partition', function() {
+        it('should return error', function () {
+            plugin.register(null, { host: '127.0.0.1', staleIn: 1, expiresIn: 1, partition: function(){} }, function(err) {
+                expect(err.toString()).to.equal('ValidationError: child "partition" fails because ["partition" must be a string]');
+            });
+        });
+    });
+
     describe('given non-array varyByHeaders', function() {
         it('should return error', function () {
             plugin.register(null, { host: '127.0.0.1', varyByHeaders: 'string', staleIn: 1, expiresIn: 1 }, function(err) {
@@ -36,7 +52,7 @@ describe('plugin option validation', function() {
         });
     });
 
-    describe('given 0 staleIn', function() {
+    describe('given invalid staleIn', function() {
         it('should return error', function () {
             plugin.register(null, { host: '127.0.0.1', staleIn: 0, expiresIn: 1 }, function(err) {
                 expect(err.toString()).to.equal('ValidationError: child "staleIn" fails because ["staleIn" must be larger than or equal to 1]');
@@ -52,7 +68,7 @@ describe('plugin option validation', function() {
         });
     });
 
-    describe('given 0 expiresIn', function() {
+    describe('given invalid expiresIn', function() {
         it('should return error', function () {
             plugin.register(null, { host: '127.0.0.1', staleIn: 1, expiresIn: 0 }, function(err) {
                 expect(err.toString()).to.equal('ValidationError: child "expiresIn" fails because ["expiresIn" must be larger than or equal to 1]');
@@ -72,14 +88,6 @@ describe('plugin option validation', function() {
         it('should return error', function () {
             plugin.register(null, { host: '127.0.0.1', staleIn: 1, expiresIn: 1, onError: '' }, function(err) {
                 expect(err.toString()).to.equal('ValidationError: child "onError" fails because ["onError" must be a Function]');
-            });
-        });
-    });
-
-    describe('given invalid partition', function() {
-        it('should return error', function () {
-            plugin.register(null, { host: '127.0.0.1', staleIn: 1, expiresIn: 1, partition: function(){} }, function(err) {
-                expect(err.toString()).to.equal('ValidationError: child "partition" fails because ["partition" must be a string]');
             });
         });
     });
