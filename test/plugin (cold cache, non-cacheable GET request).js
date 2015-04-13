@@ -13,7 +13,9 @@ var requestPrototype = {
             method: 'get',
             settings: {
                 handler: originalHandler,
-                tags: ['non-cacheable']
+                plugins: {
+                  'hapi-redis-output-cache': { cacheable: false }
+                }
             }
         },
         url: {

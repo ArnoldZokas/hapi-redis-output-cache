@@ -12,7 +12,10 @@ var requestPrototype = {
         route: {
             method: 'get',
             settings: {
-                handler: originalHandler
+                handler: originalHandler,
+                plugins: {
+                  'hapi-redis-output-cache': { cacheable: true }
+                }
             }
         },
         url: {

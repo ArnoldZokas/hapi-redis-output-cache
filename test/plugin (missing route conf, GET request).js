@@ -13,9 +13,7 @@ var requestPrototype = {
             method: 'get',
             settings: {
                 handler: originalHandler,
-                plugins: {
-                  'hapi-redis-output-cache': { cacheable: true }
-                }
+                plugins: {}
             }
         },
         url: {
@@ -29,7 +27,7 @@ var server = {
         }
     };
 
-describe('plugin (cold cache, successful GET request)', function() {
+describe('plugin (cold cache, non-cacheable GET request)', function() {
     before(function(done) {
         redis.flushdb();
 
@@ -76,7 +74,11 @@ describe('plugin (cold cache, successful GET request)', function() {
             var cachedResponse;
 
             before(function(done) {
-                req.response = {};
+                req.response = {
+                    statusCode: 200,
+                    headers: [{ 'content-type': 'application/json' }],
+                    source: { test: true }
+                };
 
                 server.onPreResponse(req, {
                     'continue': function() {
