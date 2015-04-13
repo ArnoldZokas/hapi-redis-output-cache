@@ -91,6 +91,7 @@ server.route({
         plugins: {
             'hapi-redis-output-cache': {
                 cacheable: true,
+                varyByHeaders: ['accept-language'],
                 staleIn: 60,
                 expiresIn: 120,
                 partition: 'foo'
