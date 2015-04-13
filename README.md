@@ -42,6 +42,65 @@ server.register([
 - **onCacheMiss** - *(optional)* `function(request){ ... }` invoked on each cache write; useful for tracking cache miss rates in a service
 - **onError** - *(optional)* function which is invoked on each Redis error
 
+## Route Settings
+
+By default, output caching is disabled. To enable it for a specific route, set `cacheable: true` in the route settings:
+
+```
+server.route({
+    method: 'GET',
+    path: '/',
+    handler: function (request, reply) {
+        return reply('hello world');
+    },
+    config: {
+        plugins: {
+            'hapi-redis-output-cache': {
+                cacheable: true
+            }
+        }
+    }
+});
+```
+
+To enable for all routes, set `cacheable: true` in the server config:
+
+```
+var server = new (require('hapi').Server({
+    connections: {
+        routes: {
+            plugins: {
+                'hapi-redis-output-cache': {
+                    cacheable: true
+                }
+            }
+        }
+    }
+});
+````
+
+Additionally, you can override certain properties on a per-route basis:
+```
+server.route({
+    method: 'GET',
+    path: '/',
+    handler: function(request, reply){
+        return reply('hello world');
+    },
+    config: {
+        plugins: {
+            'hapi-redis-output-cache': {
+                cacheable: true,
+                varyByHeaders: ['accept-language'],
+                staleIn: 60,
+                expiresIn: 120,
+                partition: 'foo'
+            }
+        }
+    }
+});
+```
+
 ## Miscellaneous
 Output cache metadata is injected into each request and can be access via `req.outputCache`:
 - **isStale**: boolean value indicating whether the cache is stale
