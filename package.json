@@ -26,7 +26,7 @@
   "homepage": "https://github.com/ArnoldZokas/hapi-redis-output-cache",
   "dependencies": {
     "hoek": "2.12.0",
-    "joi": "6.0.8",
+    "joi": "6.1.1",
     "redis": "0.12.1"
   },
   "devDependencies": {
