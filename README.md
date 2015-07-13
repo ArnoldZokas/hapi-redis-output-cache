@@ -107,6 +107,8 @@ Output cache metadata is injected into each request and can be access via `req.o
 - **data**: object representing cached response (available even when stale)
 
 ## Release History
+- **v2.0.1** (2015-07-13)
+ - updated dependencies
 - **v2.0.0** (2015-04-10)
  - added *partition* option
 - **v1.0.3** (2015-03-31)
