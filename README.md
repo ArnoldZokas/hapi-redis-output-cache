@@ -108,20 +108,20 @@ Output cache metadata is injected into each request and can be access via `req.o
 
 ## Release History
 - **v2.0.1** (2015-07-13)
- - updated dependencies
+    - updated dependencies
 - **v2.0.0** (2015-04-10)
- - added *partition* option
+    - added *partition* option
 - **v1.0.3** (2015-03-31)
- - bug fixes
+    - bug fixes
 - **v1.0.0** (2015-03-30)
- - implemented a more sophisticated *freshness* mechanism which allows stale and expired data to be handled separately
- - implemented a whitelist of request headers to be used for generating cache key to provide more fine-grained control over keys
+    - implemented a more sophisticated *freshness* mechanism which allows stale and expired data to be handled separately
+    - implemented a whitelist of request headers to be used for generating cache key to provide more fine-grained control over keys
 - **v0.2.1** (2015-03-30)
- - fixed handling of responses with failed joi validation
+    - fixed handling of responses with failed joi validation
 - **v0.2.0** (2015-03-30)
- - fixed cache key algorithm
+    - fixed cache key algorithm
 - **v0.1.0** (2015-03-29)
- - initial release
+    - initial release
 
 ## Contributors
 * [@orlando80](https://github.com/orlando80)
