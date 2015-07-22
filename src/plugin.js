@@ -114,6 +114,10 @@ exports.register = function (plugin, options, next) {
             return reply.continue();
         }
 
+        if(Math.floor(req.response.statusCode / 100) === 5) {
+            return reply.continue();
+        }
+
         if(req.outputCache && req.outputCache.isStale && req.response.statusCode) {
             options.onCacheMiss(req);
 
