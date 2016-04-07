@@ -63,22 +63,6 @@ server.route({
 });
 ```
 
-To enable for all routes, set `cacheable: true` in the server config:
-
-```
-var server = new (require('hapi').Server({
-    connections: {
-        routes: {
-            plugins: {
-                'hapi-redis-output-cache': {
-                    cacheable: true
-                }
-            }
-        }
-    }
-});
-````
-
 Additionally, you can override certain properties on a per-route basis:
 ```
 server.route({
@@ -93,8 +77,7 @@ server.route({
                 cacheable: true,
                 varyByHeaders: ['accept-language'],
                 staleIn: 60,
-                expiresIn: 120,
-                partition: 'foo'
+                expiresIn: 120
             }
         }
     }
