@@ -3,8 +3,8 @@
 let expect    = require('expect.js');
 let generator = require('../src/cacheKeyGenerator');
 
-describe.only('cacheKeyGenerator', () => {
-    describe('given custom partition, method, path and varyByHeaders', () => {
+describe('cacheKeyGenerator', () => {
+    describe('given custom partition and varyByHeaders', () => {
         it('should generate cache key with custom partition, method, path and filtered headers', () => {
             let req = {
                 route: {
@@ -15,7 +15,7 @@ describe.only('cacheKeyGenerator', () => {
                 },
                 headers: {
                     a: 'a',
-                    'Accept-Language': 'en-au, en-us, en',
+                    'Accept-Language': 'en-au, en-us,  en',
                     b: 'b',
                     accept: 'text/html',
                     c: 'c'
@@ -27,7 +27,7 @@ describe.only('cacheKeyGenerator', () => {
                 varyByHeaders: ['Accept', 'accept-language', 'accept-encoding']
             };
 
-            expect(generator.generateCacheKey(req, options)).to.equal('test|get|/resource|accept=text/html|accept-language=en-au, en-us, en');
+            expect(generator.generateCacheKey(req, options)).to.equal('test|get|/resource|accept=text/html|accept-language=en-au,en-us,en');
         });
     });
 
@@ -71,7 +71,7 @@ describe.only('cacheKeyGenerator', () => {
                 varyByHeaders: undefined
             };
 
-            expect(generator.generateCacheKey(req, options)).to.equal('test|get|/resource|accept=text/html');
+            expect(generator.generateCacheKey(req, options)).to.equal('test|get|/resource');
         });
     });
 });

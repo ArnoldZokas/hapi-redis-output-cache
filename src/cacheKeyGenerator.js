@@ -5,7 +5,7 @@ let _ = require('underscore');
 let lowerCase = (array) => {
     let result = [];
 
-    for (let i = 0; i < array.length; i++) {
+    for(let i = 0; i < array.length; i++) {
         result.push(array[i].toLowerCase());
     }
 
@@ -13,6 +13,10 @@ let lowerCase = (array) => {
 };
 
 let getHeaders = (rawRequestHeaders, varyByHeaders) => {
+    if(!varyByHeaders) {
+        return null;
+    }
+
     let requestHeaders = _.map(_.keys(rawRequestHeaders), (requestHeaderKey) => {
         return {
             key: requestHeaderKey.toLowerCase(),
@@ -24,7 +28,7 @@ let getHeaders = (rawRequestHeaders, varyByHeaders) => {
 
     let filteredHeaders = _.compact(_.map(varyByHeaderKeys, (varyByHeaderKey) => {
         let requestHeader = _.find(requestHeaders, (requestHeader) => { return requestHeader.key === varyByHeaderKey; });
-        return requestHeader ? `${requestHeader.key}=${requestHeader.value}` : null;
+        return requestHeader ? `${requestHeader.key}=${requestHeader.value.replace(/(\s+)/gi, '')}` : null;
     }));
 
     return filteredHeaders.join('|');

@@ -44,7 +44,7 @@ server.register([
 
 ## Route Settings
 
-By default, output caching is disabled. To enable it for a specific route, set `cacheable: true` in the route settings:
+By default, output caching is disabled. To enable it for a specific route, set `isCacheable: true` in the route settings:
 
 ```
 server.route({
@@ -56,7 +56,7 @@ server.route({
     config: {
         plugins: {
             'hapi-redis-output-cache': {
-                cacheable: true
+                isCacheable: true
             }
         }
     }
@@ -74,7 +74,7 @@ server.route({
     config: {
         plugins: {
             'hapi-redis-output-cache': {
-                cacheable: true,
+                isCacheable: true,
                 varyByHeaders: ['accept-language'],
                 staleIn: 60,
                 expiresIn: 120
@@ -91,7 +91,11 @@ Output cache metadata is injected into each request and can be access via `req.o
 
 ## Release History
 - **v3.0.0** (2015-04-XX)
-    - TODO
+    - breaking changes:
+        require node >4
+        require hapi >8
+        new key generation algorithm will invalidate existing keys
+        
 - **v2.0.2** (2015-07-22)
     - fixed caching bug
 - **v2.0.1** (2015-07-13)

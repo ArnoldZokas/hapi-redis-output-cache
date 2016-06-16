@@ -1,9 +1,10 @@
 {
   "name": "hapi-redis-output-cache",
-  "version": "3.0.0",
+  "version": "3.0.0-alpha.1",
   "description": "Redis-backed output cache plugin for Hapi",
   "engines": {
-    "node": "0.12.0"
+    "node": ">=4.0.0",
+    "hapi": ">=9.0.0"
   },
   "main": "index.js",
   "scripts": {
@@ -25,13 +26,17 @@
   },
   "homepage": "https://github.com/ArnoldZokas/hapi-redis-output-cache",
   "dependencies": {
-    "hoek": "3.0.4",
-    "joi": "8.0.5",
-    "redis": "2.6.0-1"
+    "hoek": "^3.0.4",
+    "joi": "^8.0.5",
+    "redis": "^2.6.0-1",
+    "underscore": "^1.8.3"
   },
   "devDependencies": {
-    "expect.js": "0.3.1",
+    "expect.js": "^0.3.1",
     "eslint": "^2.7.0",
     "eslint-config-defaults": "^9.0.0"
+  },
+  "peerDependencies": {
+    "hapi": ">8.0.0"
   }
 }
