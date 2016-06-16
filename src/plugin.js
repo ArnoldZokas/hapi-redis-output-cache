@@ -1,7 +1,7 @@
 'use strict';
 
 var joi  = require('joi');
-var hoek = require('hoek');
+//var hoek = require('hoek');
 
 // var isisCacheable = function(req) {
 //   // TODO: ensure non-get requests are not cached
