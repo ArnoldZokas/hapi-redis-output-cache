@@ -15,7 +15,7 @@ describe('plugin (warm cache; cacheable, successful GET request)', () => {
                 statusCode: 200,
                 headers: { 'content-language': 'de-DE' },
                 payload: { test: true, id: 1, fromCache: true },
-                expiresOn: 1466181192
+                expiresOn: Math.floor(new Date() / 1000) + 30
             }
         });
 
@@ -69,26 +69,3 @@ describe('plugin (warm cache; cacheable, successful GET request)', () => {
         expect(JSON.parse(response2.payload)).to.eql({ id: 2, test: true });
     });
 });
-
-// Test Scenarios:
-// - cold cache
-//     - ✔ does it write to cache?
-//     - ✔ does it ignore non-GET requests when reading
-//     - ✔ does it ignore non-GET requests when writing
-//     - ✔ does it ignore non-2xx responses when writing
-//     - ✔ does it execute onCacheMiss handler?
-//     - ✔ does it ignore non-cacheable requests
-// - stale cache
-//     - does it read from cache?
-//     - does it avoid executing route handler
-//     - does it write to cache?
-//     - does it avoid executing onCacheMiss handler?
-// - warm cache
-//     - ✔ does it read from cache?
-//     - ✔ does it avoid executing route handler
-//     - ✔ does it avoid writing to cache
-//     - ✔ does it avoid executing onCacheMiss handler?
-// - offline cache
-//     - does it handle disconnect?
-//     - does it handle reconnect?
-//     - handle bad cache miss handlers

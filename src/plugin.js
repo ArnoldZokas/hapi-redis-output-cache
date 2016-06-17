@@ -103,19 +103,26 @@ exports.register = function (plugin, options, next) {
                 var cachedValue = JSON.parse(data);
                 req.outputCache = {
                     data: cachedValue,
+                    isStale: true,
                     originalHandler: req.route.settings.handler
                 };
 
-                req.route.settings.handler = function(req, reply) {
-                    var response  = reply(cachedValue.payload);
-                    response.code(cachedValue.statusCode);
+                var currentTime = Math.floor(new Date() / 1000);
 
-                    var keys = Object.keys(cachedValue.headers);
-                    for(var i = 0; i < keys.length; i++) {
-                        var key = keys[i];
-                        response.header(key, cachedValue.headers[key]);
-                    }
-                };
+                if(cachedValue.expiresOn > currentTime) {
+                    req.outputCache.isStale = false;
+
+                    req.route.settings.handler = function(req, reply) {
+                        var response  = reply(cachedValue.payload);
+                        response.code(cachedValue.statusCode);
+
+                        var keys = Object.keys(cachedValue.headers);
+                        for(var i = 0; i < keys.length; i++) {
+                            var key = keys[i];
+                            response.header(key, cachedValue.headers[key]);
+                        }
+                    };
+                }
             }
 
             return reply.continue();
@@ -144,7 +151,7 @@ exports.register = function (plugin, options, next) {
             return reply.continue();
         }
 
-        if(req.outputCache) {
+        if(req.outputCache && req.outputCache.isStale === false) {
             req.route.settings.handler = req.outputCache.originalHandler;
             return reply.continue();
         }
