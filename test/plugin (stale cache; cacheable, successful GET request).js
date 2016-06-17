@@ -6,7 +6,6 @@ const fauxServer  = require('./fauxServer');
 
 describe('plugin (stale cache; cacheable, successful GET request)', () => {
     let response;
-    let response2;
 
     before(next => {
         redisHelper.reset({
@@ -49,35 +48,35 @@ describe('plugin (stale cache; cacheable, successful GET request)', () => {
     });
 
     it('should cache response status code', next => {
-        var cachedResponse = redisHelper.get(response.request, reply => {
+        redisHelper.get(response.request, reply => {
             expect(reply.statusCode).to.be(200);
             next();
         });
     });
 
     it('should cache response headers', next => {
-        var cachedResponse = redisHelper.get(response.request, reply => {
+        redisHelper.get(response.request, reply => {
             expect(reply.headers).to.eql({ 'content-language': 'de-DE' });
             next();
         });
     });
 
     it('should cache response payload', next => {
-        var cachedResponse = redisHelper.get(response.request, reply => {
+        redisHelper.get(response.request, reply => {
             expect(reply.payload).to.eql({ id: 1, test: true });
             next();
         });
     });
 
     it('should set expiry timestamp', next => {
-        var cachedResponse = redisHelper.get(response.request, reply => {
+        redisHelper.get(response.request, reply => {
             expect(reply.expiresOn).to.greaterThan(Math.floor(new Date() / 1000));
             next();
         });
     });
 
     it('should set ttl', next => {
-        var cachedResponse = redisHelper.ttl(response.request, reply => {
+        redisHelper.ttl(response.request, reply => {
             expect(reply).to.be(60);
             next();
         });

@@ -6,7 +6,6 @@ const fauxServer  = require('./fauxServer');
 
 describe('plugin (stale cache; cacheable, failed GET request)', () => {
     let response;
-    let response2;
 
     before(next => {
         redisHelper.reset({
@@ -50,7 +49,7 @@ describe('plugin (stale cache; cacheable, failed GET request)', () => {
     });
 
     it('should not set ttl', next => {
-        var cachedResponse = redisHelper.ttl(response.request, reply => {
+        redisHelper.ttl(response.request, reply => {
             expect(reply).to.be(45);
             next();
         });
@@ -75,7 +74,7 @@ describe('plugin (stale cache; cacheable, failed GET request)', () => {
 //     - ✔ does it avoid executing route handler
 //     - ✔ does it write to cache?
 //     - ✔ does it avoid executing onCacheMiss handler?
-//     - does it use stale value in case original handler fails?
+//     - ✔ does it use stale value in case original handler fails?
 // - warm cache
 //     - ✔ does it read from cache?
 //     - ✔ does it avoid executing route handler

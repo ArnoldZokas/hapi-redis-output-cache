@@ -33,7 +33,7 @@ describe('plugin (cold cache; cacheable, successful POST request)', () => {
     });
 
     it('should not cache response', next => {
-        var cachedResponse = redisHelper.get(response.request, reply => {
+        redisHelper.get(response.request, reply => {
             expect(reply).to.be(null);
             next();
         });

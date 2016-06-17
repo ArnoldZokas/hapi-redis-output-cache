@@ -65,7 +65,7 @@ module.exports = next => {
                 port: 1234,
                 staleIn: 30,
                 expiresIn: 60,
-                onCacheMiss: function(req, reply) { req.context = { cacheMiss: true } }
+                onCacheMiss: function(req, reply) { reply.request.context = { cacheMiss: true } }
             }
         }
     ],
