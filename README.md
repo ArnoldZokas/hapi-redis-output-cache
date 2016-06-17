@@ -39,7 +39,7 @@ server.register([
 - **partition** - *(optional)* string to prefix cache keys with, useful for shared redis instances
 - **staleIn** - number of seconds until the cached response will be considered stale and marked for regeneration
 - **expiresIn** - number of seconds until the cached response will be purged from Redis
-- **onCacheMiss** - *(optional)* `function(request){ ... }` invoked on each cache write; useful for tracking cache miss rates in a service
+- **onCacheMiss** - *(optional)* `function(req, reply){ ... }` invoked on each cache write; useful for responding to cache miss events
 - **onError** - *(optional)* function which is invoked on each Redis error
 
 ## Route Settings
@@ -63,27 +63,6 @@ server.route({
 });
 ```
 
-Additionally, you can override certain properties on a per-route basis:
-```
-server.route({
-    method: 'GET',
-    path: '/',
-    handler: function(request, reply){
-        return reply('hello world');
-    },
-    config: {
-        plugins: {
-            'hapi-redis-output-cache': {
-                isCacheable: true,
-                varyByHeaders: ['accept-language'],
-                staleIn: 60,
-                expiresIn: 120
-            }
-        }
-    }
-});
-```
-
 ## Miscellaneous
 Output cache metadata is injected into each request and can be access via `req.outputCache`:
 - **isStale**: boolean value indicating whether the cache is stale
@@ -95,7 +74,7 @@ Output cache metadata is injected into each request and can be access via `req.o
         require node >4
         require hapi >8
         new key generation algorithm will invalidate existing keys
-        
+
 - **v2.0.2** (2015-07-22)
     - fixed caching bug
 - **v2.0.1** (2015-07-13)
