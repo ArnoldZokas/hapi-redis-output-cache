@@ -83,32 +83,7 @@ describe('plugin (stale cache; cacheable, successful GET request)', () => {
         });
     });
 
-    it('should trigger cache miss event', next => {
+    it('should trigger cache miss event', () => {
         expect(response.request.context.cacheMiss).to.be(true);
-        next();
     });
 });
-
-// Test Scenarios:
-// - cold cache
-//     - ✔ does it write to cache?
-//     - ✔ does it ignore non-GET requests when reading
-//     - ✔ does it ignore non-GET requests when writing
-//     - ✔ does it ignore non-2xx responses when writing
-//     - ✔ does it execute onCacheMiss handler?
-//     - ✔ does it ignore non-cacheable requests
-// - stale cache
-//     - ✔ does it read from cache?
-//     - ✔ does it avoid executing route handler
-//     - ✔ does it write to cache?
-//     - ✔ does it avoid executing onCacheMiss handler?
-//     - does it use stale value in case original handler fails?
-// - warm cache
-//     - ✔ does it read from cache?
-//     - ✔ does it avoid executing route handler
-//     - ✔ does it avoid writing to cache
-//     - ✔ does it avoid executing onCacheMiss handler?
-// - offline cache
-//     - does it handle disconnect?
-//     - does it handle reconnect?
-//     - handle bad cache miss handlers

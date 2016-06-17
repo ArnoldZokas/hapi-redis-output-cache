@@ -148,6 +148,19 @@ exports.register = function (plugin, options, next) {
         }
 
         if(req.response.statusCode !== 200) {
+            if (req.response.statusCode >= 500 && req.response.statusCode < 600 && req.outputCache && req.outputCache.data) {
+                req.response.statusCode = req.outputCache.data.statusCode;
+                req.response.headers['content-type'] = 'application/json; charset=utf-8';
+
+                var keys = Object.keys(req.outputCache.data.headers);
+                for(var i = 0; i < keys.length; i++) {
+                    var key = keys[i];
+                    req.response.headers[key] = req.outputCache.data.headers[key];
+                }
+
+                req.response.source = req.outputCache.data.payload;
+            }
+
             return reply.continue();
         }
 

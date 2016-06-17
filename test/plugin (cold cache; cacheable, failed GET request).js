@@ -23,8 +23,8 @@ describe('plugin (cold cache; cacheable, failed GET request)', () => {
         });
     });
 
-    it('should return status 404', () => {
-        expect(response.statusCode).to.be(404);
+    it('should return status 500', () => {
+        expect(response.statusCode).to.be(500);
     });
 
     it('should not cache response', next => {

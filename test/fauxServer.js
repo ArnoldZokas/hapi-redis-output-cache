@@ -48,7 +48,7 @@ module.exports = next => {
         path: "/cacheable-failed-request",
         config: {
             handler: (req, reply) => {
-                reply().code(404);
+                reply().code(500);
             },
             plugins: {
                 'hapi-redis-output-cache': { isCacheable: true }

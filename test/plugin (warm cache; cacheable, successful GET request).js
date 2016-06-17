@@ -53,16 +53,12 @@ describe('plugin (warm cache; cacheable, successful GET request)', () => {
         expect(response.headers['content-language']).to.be('de-DE');
     });
 
-    it('should return cached payload', next => {
-        var cachedResponse = redisHelper.get(response.request, reply => {
-            expect(reply.payload).to.eql({ fromCache: true, id: 1, test: true });
-            next();
-        });
+    it('should return cached payload', () => {
+        expect(JSON.parse(response.payload)).to.eql({ fromCache: true, id: 1, test: true });
     });
 
-    it('should not trigger cache miss event', next => {
+    it('should not trigger cache miss event', () => {
         expect(response.request.context).to.not.be.ok();
-        next();
     });
 
     it('should return generated payload for cold request', () => {

@@ -9,6 +9,10 @@ module.exports = {
 
         if(seedValue) {
             redis.set(seedValue.key, JSON.stringify(seedValue.value));
+
+            if(seedValue.ttl) {
+                redis.expire(seedValue.key, seedValue.ttl);
+            }
         }
     },
     ttl: (req, next) => {
@@ -18,7 +22,7 @@ module.exports = {
             if (err) {
                 throw err;
             }
-            
+
             return next(reply);
         });
     },
