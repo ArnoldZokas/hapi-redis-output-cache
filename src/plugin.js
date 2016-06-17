@@ -115,6 +115,11 @@ exports.register = function (plugin, options, next) {
         //     client.setex(cacheKey, routeSettings.expiresIn, JSON.stringify(cacheValue));
         // }
 
+        var routeOptions = req.route.settings.plugins['hapi-redis-output-cache'] || {};
+        if(routeOptions.isCacheable !== true) {
+            return reply.continue();
+        }
+
         options.onCacheMiss(req, reply);
 
         var cacheKey = cacheKeyGenerator.generateCacheKey(req, options);

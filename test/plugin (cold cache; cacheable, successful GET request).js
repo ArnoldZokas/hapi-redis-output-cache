@@ -4,7 +4,7 @@ const expect      = require('expect.js');
 const redisHelper = require('./redisHelper');
 const fauxServer  = require('./fauxServer');
 
-describe.only('plugin (cold cache; cacheable, successful request)', () => {
+describe('plugin (cold cache; cacheable, successful GET request)', () => {
     let response;
 
     before(next => {
@@ -60,33 +60,7 @@ describe.only('plugin (cold cache; cacheable, successful request)', () => {
     });
 
     it('should trigger cache miss event', next => {
-        var cachedResponse = redisHelper.get(response.request, reply => {
-            expect(response.request.context.cacheMiss).to.be(true);
-            next();
-        });
+        expect(response.request.context.cacheMiss).to.be(true);
+        next();
     });
 });
-
-// Test Scenarios:
-// - cold cache
-//     - ✔ does it write to cache?
-//     - does it ignore non-GET requests when reading
-//     - does it ignore non-GET requests when writing
-//     - does it ignore non-2xx responses when writing
-//     - does it ignore errored responses when writing
-//     - does it execute onCacheMiss handler?
-//     - does it ignore non-cacheable requests
-// - stale cache
-//     - does it read from cache?
-//     - does it avoid executing route handler
-//     - does it write to cache?
-//     - does it avoid executing onCacheMiss handler?
-// - warm cache
-//     - does it read from cache?
-//     - does it avoid executing route handler
-//     - does it avoid writing to cache
-//     - does it avoid executing onCacheMiss handler?
-// - offline cache
-//     - does it handle disconnect?
-//     - does it handle reconnect?
-//     - handle bad cache miss handlers
