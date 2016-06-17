@@ -9,10 +9,11 @@ module.exports = next => {
 
     server.route({
         method: "GET",
-        path: "/cacheable-successful-request",
+        path: "/cacheable-successful-request/{id}",
         config: {
             handler: (req, reply) => {
-                reply({ test: true }).header('Content-Language', 'de-DE');
+                console.log('RUN!!!');
+                reply({ id: req.params.id, test: true }).header('Content-Language', 'de-DE');
             },
             plugins: {
                 'hapi-redis-output-cache': { isCacheable: true }

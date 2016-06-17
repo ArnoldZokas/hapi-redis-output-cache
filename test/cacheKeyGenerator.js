@@ -11,7 +11,7 @@ describe('cacheKeyGenerator', () => {
                     method: 'get'
                 },
                 url: {
-                    path: '/resource'
+                    path: '/ReSoUrCe'
                 },
                 headers: {
                     a: 'a',

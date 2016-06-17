@@ -31,6 +31,10 @@ describe('plugin (cold cache; non-cacheable, successful GET request)', () => {
         expect(response.headers['content-type']).to.be('application/json; charset=utf-8');
     });
 
+    it('should return content-language header', () => {
+        expect(response.headers['content-language']).to.be('de-DE');
+    });
+
     it('should not cache response', next => {
         var cachedResponse = redisHelper.get(response.request, reply => {
             expect(reply).to.be(null);

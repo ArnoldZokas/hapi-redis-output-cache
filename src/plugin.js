@@ -32,7 +32,7 @@ exports.register = function (plugin, options, next) {
         host: options.host,
         port: options.port || 6379
     });
-    //
+    
     // // TODO: test error behaviour
     // client.on('error', options.onError || function() {});
     //
@@ -83,7 +83,34 @@ exports.register = function (plugin, options, next) {
         //     return reply.continue();
         // });
 
-        return reply.continue();
+        var cacheKey = cacheKeyGenerator.generateCacheKey(req, options);
+
+        client.get(cacheKey, (err, data) => {
+            if(err) {
+                return reply.continue();
+            }
+
+            if(data) {
+                var cachedValue = JSON.parse(data);
+                req.outputCache = {
+                    data: cachedValue,
+                    originalHandler: req.route.settings.handler
+                };
+
+                req.route.settings.handler = function(req, reply) {
+                    var response  = reply(cachedValue.payload);
+                    response.code(cachedValue.statusCode);
+
+                    var keys = Object.keys(cachedValue.headers);
+                    for(var i = 0; i < keys.length; i++) {
+                        var key = keys[i];
+                        response.header(key, cachedValue.headers[key]);
+                    }
+                };
+            }
+
+            return reply.continue();
+        });
     });
 
     plugin.ext('onPreResponse', function(req, reply) {
@@ -105,6 +132,11 @@ exports.register = function (plugin, options, next) {
         }
 
         if(req.response.statusCode !== 200) {
+            return reply.continue();
+        }
+
+        if(req.outputCache) {
+            req.route.settings.handler = req.outputCache.originalHandler;
             return reply.continue();
         }
 

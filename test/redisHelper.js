@@ -4,8 +4,12 @@ const cacheKeyGenerator = require('../src/cacheKeyGenerator');
 const redis             = require('redis').createClient(1234, '127.0.0.1');
 
 module.exports = {
-    reset: () => {
+    reset: seedValue => {
         redis.flushdb();
+
+        if(seedValue) {
+            redis.set(seedValue.key, JSON.stringify(seedValue.value));
+        }
     },
     get: (req, next) => {
         var key = cacheKeyGenerator.generateCacheKey(req, { partition: 'test' });;

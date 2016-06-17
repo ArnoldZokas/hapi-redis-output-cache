@@ -12,7 +12,7 @@ describe('plugin (cold cache; cacheable, successful GET request)', () => {
 
         fauxServer(server => {
             server.request({
-                url: '/cacheable-successful-request',
+                url: '/cacheable-successful-request/1',
                 headers: {
                     'Accept-Language': "de-DE, de, en"
                 }
@@ -31,6 +31,10 @@ describe('plugin (cold cache; cacheable, successful GET request)', () => {
         expect(response.headers['content-type']).to.be('application/json; charset=utf-8');
     });
 
+    it('should return content-language header', () => {
+        expect(response.headers['content-language']).to.be('de-DE');
+    });
+
     it('should cache response status code', next => {
         var cachedResponse = redisHelper.get(response.request, reply => {
             expect(reply.statusCode).to.be(200);
@@ -47,7 +51,7 @@ describe('plugin (cold cache; cacheable, successful GET request)', () => {
 
     it('should cache response payload', next => {
         var cachedResponse = redisHelper.get(response.request, reply => {
-            expect(reply.payload).to.eql({ test: true });
+            expect(reply.payload).to.eql({ id: 1, test: true });
             next();
         });
     });
