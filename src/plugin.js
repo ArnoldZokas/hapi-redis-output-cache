@@ -1,7 +1,7 @@
 'use strict';
 
-var joi  = require('joi');
-var cacheKeyGenerator  = require('./cacheKeyGenerator');
+const joi                = require('joi');
+const cacheKeyGenerator  = require('./cacheKeyGenerator');
 //var hoek = require('hoek');
 
 // var isisCacheable = function(req) {
@@ -14,7 +14,7 @@ var cacheKeyGenerator  = require('./cacheKeyGenerator');
 // };
 
 exports.register = function (plugin, options, next) {
-    var validation = joi.validate(options, require('./schema'));
+    const validation = joi.validate(options, require('./schema'));
 
     if(validation.error) {
         return next(validation.error);
@@ -28,7 +28,7 @@ exports.register = function (plugin, options, next) {
     // };
     //
 
-    var client = require('redis').createClient({
+    const client = require('redis').createClient({
         host: options.host,
         port: options.port || 6379
     });
@@ -36,7 +36,7 @@ exports.register = function (plugin, options, next) {
     // // TODO: test error behaviour
     // client.on('error', options.onError || function() {});
     //
-    plugin.ext('onPreHandler', function(req, reply) {
+    plugin.ext('onPreHandler', (req, reply) => {
         // req.outputCache = req.outputCache || {
         //     isStale: null,
         //     data: null
@@ -83,7 +83,7 @@ exports.register = function (plugin, options, next) {
         //     return reply.continue();
         // });
 
-        var routeOptions = req.route.settings.plugins['hapi-redis-output-cache'] || {};
+        const routeOptions = req.route.settings.plugins['hapi-redis-output-cache'] || {};
         if(routeOptions.isCacheable !== true) {
             return reply.continue();
         }
@@ -92,7 +92,7 @@ exports.register = function (plugin, options, next) {
             return reply.continue();
         }
 
-        var cacheKey = cacheKeyGenerator.generateCacheKey(req, options);
+        const cacheKey = cacheKeyGenerator.generateCacheKey(req, options);
 
         client.get(cacheKey, (err, data) => {
             if(err) {
@@ -100,25 +100,25 @@ exports.register = function (plugin, options, next) {
             }
 
             if(data) {
-                var cachedValue = JSON.parse(data);
+                const cachedValue = JSON.parse(data);
                 req.outputCache = {
                     data: cachedValue,
                     isStale: true,
                     originalHandler: req.route.settings.handler
                 };
 
-                var currentTime = Math.floor(new Date() / 1000);
+                const currentTime = Math.floor(new Date() / 1000);
 
                 if(cachedValue.expiresOn > currentTime) {
                     req.outputCache.isStale = false;
 
                     req.route.settings.handler = function(req, reply) {
-                        var response  = reply(cachedValue.payload);
+                        const response  = reply(cachedValue.payload);
                         response.code(cachedValue.statusCode);
 
-                        var keys = Object.keys(cachedValue.headers);
-                        for(var i = 0; i < keys.length; i++) {
-                            var key = keys[i];
+                        const keys = Object.keys(cachedValue.headers);
+                        for(let i = 0; i < keys.length; i++) {
+                            const key = keys[i];
                             response.header(key, cachedValue.headers[key]);
                         }
                     };
@@ -129,7 +129,7 @@ exports.register = function (plugin, options, next) {
         });
     });
 
-    plugin.ext('onPreResponse', function(req, reply) {
+    plugin.ext('onPreResponse', (req, reply) => {
         // if(client.connected === false) {
         //     return reply.continue();
         // }
@@ -138,7 +138,7 @@ exports.register = function (plugin, options, next) {
         //     client.setex(cacheKey, routeSettings.expiresIn, JSON.stringify(cacheValue));
         // }
 
-        var routeOptions = req.route.settings.plugins['hapi-redis-output-cache'] || {};
+        const routeOptions = req.route.settings.plugins['hapi-redis-output-cache'] || {};
         if(routeOptions.isCacheable !== true) {
             return reply.continue();
         }
@@ -152,9 +152,9 @@ exports.register = function (plugin, options, next) {
                 req.response.statusCode = req.outputCache.data.statusCode;
                 req.response.headers['content-type'] = 'application/json; charset=utf-8';
 
-                var keys = Object.keys(req.outputCache.data.headers);
-                for(var i = 0; i < keys.length; i++) {
-                    var key = keys[i];
+                const keys = Object.keys(req.outputCache.data.headers);
+                for(let i = 0; i < keys.length; i++) {
+                    const key = keys[i];
                     req.response.headers[key] = req.outputCache.data.headers[key];
                 }
 
@@ -171,9 +171,9 @@ exports.register = function (plugin, options, next) {
 
         options.onCacheMiss(req, reply);
 
-        var cacheKey = cacheKeyGenerator.generateCacheKey(req, options);
+        const cacheKey = cacheKeyGenerator.generateCacheKey(req, options);
 
-        var cacheValue = {
+        const cacheValue = {
             statusCode: req.response.statusCode,
             headers: req.response.headers,
             payload: req.response.source,

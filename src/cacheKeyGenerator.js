@@ -2,7 +2,7 @@
 
 let _ = require('underscore');
 
-let lowerCase = (array) => {
+let lowerCase = array => {
     let result = [];
 
     for(let i = 0; i < array.length; i++) {
@@ -17,7 +17,7 @@ let getHeaders = (rawRequestHeaders, varyByHeaders) => {
         return null;
     }
 
-    let requestHeaders = _.map(_.keys(rawRequestHeaders), (requestHeaderKey) => {
+    let requestHeaders = _.map(_.keys(rawRequestHeaders), requestHeaderKey => {
         return {
             key: requestHeaderKey.toLowerCase(),
             value: rawRequestHeaders[requestHeaderKey]
@@ -26,8 +26,8 @@ let getHeaders = (rawRequestHeaders, varyByHeaders) => {
 
     let varyByHeaderKeys = _.sortBy(lowerCase(varyByHeaders));
 
-    let filteredHeaders = _.compact(_.map(varyByHeaderKeys, (varyByHeaderKey) => {
-        let requestHeader = _.find(requestHeaders, (requestHeader) => { return requestHeader.key === varyByHeaderKey; });
+    let filteredHeaders = _.compact(_.map(varyByHeaderKeys, varyByHeaderKey => {
+        let requestHeader = _.find(requestHeaders, requestHeader => { return requestHeader.key === varyByHeaderKey; });
         return requestHeader ? `${requestHeader.key}=${requestHeader.value.replace(/(\s+)/gi, '')}` : null;
     }));
 

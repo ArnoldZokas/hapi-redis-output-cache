@@ -16,7 +16,7 @@ module.exports = {
         }
     },
     ttl: (req, next) => {
-        var key = cacheKeyGenerator.generateCacheKey(req, { partition: 'test' });
+        const key = cacheKeyGenerator.generateCacheKey(req, { partition: 'test' });
 
         redis.ttl(key, (err, reply) => {
             if (err) {
@@ -27,7 +27,7 @@ module.exports = {
         });
     },
     get: (req, next) => {
-        var key = cacheKeyGenerator.generateCacheKey(req, { partition: 'test' });
+        const key = cacheKeyGenerator.generateCacheKey(req, { partition: 'test' });
 
         redis.get(key, (err, reply) => {
             if (err) {

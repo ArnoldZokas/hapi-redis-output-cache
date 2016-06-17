@@ -3,7 +3,12 @@
   - "defaults"
 
 "rules":
+  "arrow-parens": ["error", "as-needed"]
+  "no-var": "error"
   "no-console": 0
+  "object-shorthand": ["error", "properties"]
+  "prefer-arrow-callback": "error"
+  "strict": 1
 
 "env":
   "es6": true

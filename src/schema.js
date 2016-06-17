@@ -1,6 +1,6 @@
 'use strict';
 
-var joi = require('joi');
+const joi = require('joi');
 
 module.exports = {
     host: joi.string().required(),
