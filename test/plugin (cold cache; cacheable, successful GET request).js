@@ -63,6 +63,13 @@ describe('plugin (cold cache; cacheable, successful GET request)', () => {
         });
     });
 
+    it('should set ttl', () => {
+        var cachedResponse = redisHelper.ttl(response.request, reply => {
+            expect(reply).to.be(60);
+            next();
+        });
+    });
+
     it('should trigger cache miss event', next => {
         expect(response.request.context.cacheMiss).to.be(true);
         next();

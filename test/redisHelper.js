@@ -11,6 +11,17 @@ module.exports = {
             redis.set(seedValue.key, JSON.stringify(seedValue.value));
         }
     },
+    ttl: (req, next) => {
+        var key = cacheKeyGenerator.generateCacheKey(req, { partition: 'test' });;
+
+        redis.ttl(key, (err, reply) => {
+            if (err) {
+                throw err;
+            }
+            
+            return next(reply);
+        });
+    },
     get: (req, next) => {
         var key = cacheKeyGenerator.generateCacheKey(req, { partition: 'test' });;
 

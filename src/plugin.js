@@ -160,7 +160,7 @@ exports.register = function (plugin, options, next) {
             expiresOn: Math.floor(new Date() / 1000) + options.staleIn
         };
 
-        client.set(cacheKey, JSON.stringify(cacheValue));
+        client.setex(cacheKey, options.expiresIn, JSON.stringify(cacheValue));
 
         return reply.continue();
     });
