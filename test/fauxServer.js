@@ -12,7 +12,6 @@ module.exports = next => {
         path: "/cacheable-successful-request/{id}",
         config: {
             handler: (req, reply) => {
-                console.log('RUN!!!');
                 reply({ id: req.params.id, test: true }).header('Content-Language', 'de-DE');
             },
             plugins: {

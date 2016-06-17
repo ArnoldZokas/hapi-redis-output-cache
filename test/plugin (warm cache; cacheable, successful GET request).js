@@ -73,7 +73,7 @@ describe('plugin (warm cache; cacheable, successful GET request)', () => {
 // Test Scenarios:
 // - cold cache
 //     - ✔ does it write to cache?
-//     - does it ignore non-GET requests when reading
+//     - ✔ does it ignore non-GET requests when reading
 //     - ✔ does it ignore non-GET requests when writing
 //     - ✔ does it ignore non-2xx responses when writing
 //     - ✔ does it execute onCacheMiss handler?

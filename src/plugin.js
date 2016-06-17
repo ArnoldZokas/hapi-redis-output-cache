@@ -32,7 +32,7 @@ exports.register = function (plugin, options, next) {
         host: options.host,
         port: options.port || 6379
     });
-    
+
     // // TODO: test error behaviour
     // client.on('error', options.onError || function() {});
     //
@@ -82,6 +82,15 @@ exports.register = function (plugin, options, next) {
         //
         //     return reply.continue();
         // });
+
+        var routeOptions = req.route.settings.plugins['hapi-redis-output-cache'] || {};
+        if(routeOptions.isCacheable !== true) {
+            return reply.continue();
+        }
+
+        if(req.route.method !== 'get') {
+            return reply.continue();
+        }
 
         var cacheKey = cacheKeyGenerator.generateCacheKey(req, options);
 
