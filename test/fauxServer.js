@@ -25,7 +25,7 @@ module.exports = next => {
         path: "/cacheable-successful-request",
         config: {
             handler: (req, reply) => {
-                reply({ test: true }).header('Content-Language', 'de-DE');
+                reply({ test: true }).header('Content-Language', 'de-DE').code(200);
             },
             plugins: {
                 'hapi-redis-output-cache': { isCacheable: true }
@@ -55,7 +55,7 @@ module.exports = next => {
             }
         }
     });
-    
+
     server.register([
         {
             register: require('../index'),
@@ -77,7 +77,7 @@ module.exports = next => {
         fauxEndpoints = {
             request: (options, next) => {
                 server.inject({
-                    method: 'GET',
+                    method: options.method || 'GET',
                     url: options.url,
                     headers: options.headers
                 }, response => {

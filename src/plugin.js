@@ -91,27 +91,7 @@ exports.register = function (plugin, options, next) {
         //     return reply.continue();
         // }
         //
-        // if(isisCacheable(req) === false) {
-        //     return reply.continue();
-        // }
-        //
-        // if(Math.floor(req.response.statusCode / 100) === 5) {
-        //     return reply.continue();
-        // }
-        //
         // if(req.outputCache && req.outputCache.isStale && req.response.statusCode) {
-        //     options.onCacheMiss(req);
-        //
-        //     var routeSettings = hoek.applyToDefaults(defaultCacheOptions, req.route.settings.plugins['hapi-redis-output-cache']);
-        //
-        //     var cacheValue = {
-        //         statusCode: req.response.statusCode,
-        //         headers: req.response.headers,
-        //         payload: req.response.source,
-        //         expiresOn: Math.floor(new Date() / 1000) + routeSettings.staleIn
-        //     };
-        //
-        //     var cacheKey = generateCacheKey(req, routeSettings);
         //     client.setex(cacheKey, routeSettings.expiresIn, JSON.stringify(cacheValue));
         // }
 
@@ -120,7 +100,11 @@ exports.register = function (plugin, options, next) {
             return reply.continue();
         }
 
-        if(req.response.statusCode < 200 || req.response.statusCode >= 300) {
+        if(req.route.method !== 'get') {
+            return reply.continue();
+        }
+
+        if(req.response.statusCode !== 200) {
             return reply.continue();
         }
 
