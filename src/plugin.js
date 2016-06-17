@@ -120,6 +120,10 @@ exports.register = function (plugin, options, next) {
             return reply.continue();
         }
 
+        if(req.response.statusCode < 200 || req.response.statusCode >= 300) {
+            return reply.continue();
+        }
+
         options.onCacheMiss(req, reply);
 
         var cacheKey = cacheKeyGenerator.generateCacheKey(req, options);

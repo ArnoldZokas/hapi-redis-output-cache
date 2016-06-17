@@ -48,27 +48,14 @@ module.exports = next => {
         path: "/cacheable-failed-request",
         config: {
             handler: (req, reply) => {
-                reply({ test: true }).header('Content-Language', 'de-DE').code(404);
+                reply().code(404);
             },
             plugins: {
                 'hapi-redis-output-cache': { isCacheable: true }
             }
         }
     });
-
-    server.route({
-        method: "GET",
-        path: "/cacheable-errored-request",
-        config: {
-            handler: (req, reply) => {
-                throw new Error('test');
-            },
-            plugins: {
-                'hapi-redis-output-cache': { isCacheable: true }
-            }
-        }
-    });
-
+    
     server.register([
         {
             register: require('../index'),
