@@ -1,12 +1,12 @@
 'use strict';
 
-let expect    = require('expect.js');
-let generator = require('../src/cacheKeyGenerator');
+const expect    = require('expect.js');
+const generator = require('../src/cacheKeyGenerator');
 
 describe('cacheKeyGenerator', () => {
     describe('given custom partition and varyByHeaders', () => {
         it('should generate cache key with custom partition, method, path and filtered headers', () => {
-            let req = {
+            const req = {
                 route: {
                     method: 'get'
                 },
@@ -27,7 +27,7 @@ describe('cacheKeyGenerator', () => {
                 }
             };
 
-            let options = {
+            const options = {
                 partition: 'test',
                 varyByHeaders: ['Accept', 'accept-language', 'accept-encoding']
             };
@@ -38,7 +38,7 @@ describe('cacheKeyGenerator', () => {
 
     describe('given no partition', () => {
         it('should generate cache key with "default" partition, method, path and filtered headers', () => {
-            let req = {
+            const req = {
                 route: {
                     method: 'get'
                 },
@@ -47,7 +47,7 @@ describe('cacheKeyGenerator', () => {
                 }
             };
 
-            let options = {
+            const options = {
                 partition: undefined,
                 varyByHeaders: ['Accept', 'accept-language', 'accept-encoding']
             };
@@ -58,7 +58,7 @@ describe('cacheKeyGenerator', () => {
 
     describe('given no varyByHeaders', () => {
         it('should generate cache without headers', () => {
-            let req = {
+            const req = {
                 route: {
                     method: 'get'
                 },
@@ -71,7 +71,7 @@ describe('cacheKeyGenerator', () => {
                 }
             };
 
-            let options = {
+            const options = {
                 partition: 'test',
                 varyByHeaders: undefined
             };

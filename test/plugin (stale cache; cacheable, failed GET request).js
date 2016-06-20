@@ -83,4 +83,3 @@ describe('plugin (stale cache; cacheable, failed GET request)', () => {
 // - offline cache
 //     - does it handle disconnect?
 //     - does it handle reconnect?
-//     - handle bad cache miss handlers

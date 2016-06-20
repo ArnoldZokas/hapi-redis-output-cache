@@ -16,13 +16,9 @@ exports.register = function (plugin, options, next) {
     });
 
     // // TODO: test error behaviour
-    // client.on('error', options.onError || function() {});
+    // client.on('error', options.onError || function() { server.log? });
 
     plugin.ext('onPreHandler', (req, reply) => {
-        // if(client.connected === false) {
-        //     return reply.continue();
-        // }
-
         const routeOptions = req.route.settings.plugins['hapi-redis-output-cache'] || {};
         if(routeOptions.isCacheable !== true) {
             return reply.continue();
@@ -34,6 +30,9 @@ exports.register = function (plugin, options, next) {
 
         const cacheKey = cacheKeyGenerator.generateCacheKey(req, options);
 
+        // if(client.connected === false) {
+        //     return reply.continue();
+        // }
         client.get(cacheKey, (err, data) => {
             if(err) {
                 return reply.continue();
@@ -70,10 +69,6 @@ exports.register = function (plugin, options, next) {
     });
 
     plugin.ext('onPreResponse', (req, reply) => {
-        // if(client.connected === false) {
-        //     return reply.continue();
-        // }
-
         const routeOptions = req.route.settings.plugins['hapi-redis-output-cache'] || {};
         if(routeOptions.isCacheable !== true) {
             return reply.continue();
@@ -114,6 +109,9 @@ exports.register = function (plugin, options, next) {
             expiresOn: Math.floor(new Date() / 1000) + options.staleIn
         };
 
+        // if(client.connected === false) {
+        //     return reply.continue();
+        // }
         client.setex(cacheKey, options.expiresIn, JSON.stringify(cacheValue));
 
         options.onCacheMiss(req, reply);
