@@ -12,7 +12,7 @@ describe('plugin (cold cache; cacheable, successful GET request)', () => {
 
         fauxServer(server => {
             server.request({
-                url: '/cacheable-successful-request/1',
+                url: '/cacheable-successful-request/1?param=1',
                 headers: {
                     'Accept-Language': "de-DE, de, en"
                 }

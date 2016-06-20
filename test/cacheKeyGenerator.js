@@ -11,7 +11,12 @@ describe('cacheKeyGenerator', () => {
                     method: 'get'
                 },
                 url: {
-                    path: '/ReSoUrCe'
+                    query: {
+                        a: '1',
+                        C: '3',
+                        b: '2'
+                    },
+                    pathname: '/ReSoUrCe'
                 },
                 headers: {
                     a: 'a',
@@ -27,7 +32,7 @@ describe('cacheKeyGenerator', () => {
                 varyByHeaders: ['Accept', 'accept-language', 'accept-encoding']
             };
 
-            expect(generator.generateCacheKey(req, options)).to.equal('test|get|/resource|accept=text/html|accept-language=en-au,en-us,en');
+            expect(generator.generateCacheKey(req, options)).to.equal('test|get|/resource?C=3&a=1&b=2&|accept=text/html|accept-language=en-au,en-us,en');
         });
     });
 
@@ -38,7 +43,7 @@ describe('cacheKeyGenerator', () => {
                     method: 'get'
                 },
                 url: {
-                    path: '/resource'
+                    pathname: '/resource'
                 }
             };
 
@@ -58,7 +63,7 @@ describe('cacheKeyGenerator', () => {
                     method: 'get'
                 },
                 url: {
-                    path: '/resource'
+                    pathname: '/resource'
                 },
                 headers: {
                     accept: 'text/html',

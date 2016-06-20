@@ -1,9 +1,10 @@
 'use strict';
 
-let _ = require('underscore');
+const _   = require('underscore');
+const url = require('url');
 
-let lowerCase = array => {
-    let result = [];
+const lowerCase = array => {
+    const result = [];
 
     for(let i = 0; i < array.length; i++) {
         result.push(array[i].toLowerCase());
@@ -12,22 +13,38 @@ let lowerCase = array => {
     return result;
 };
 
-let getHeaders = (rawRequestHeaders, varyByHeaders) => {
+const normaliseUrl = url => {
+    const pathname = url.pathname.toLowerCase();
+    const sortedQueryKeys = _.keys(url.query).sort();
+
+    let normalisedQuery = '';
+    sortedQueryKeys.forEach(key => {
+        normalisedQuery += `${key}=${url.query[key]}&`
+    });
+
+    if(normalisedQuery.length > 0) {
+        normalisedQuery = `?${normalisedQuery}`
+    }
+
+    return `${pathname}${normalisedQuery}`;
+};
+
+const normaliseHeaders = (rawRequestHeaders, varyByHeaders) => {
     if(!varyByHeaders) {
         return null;
     }
 
-    let requestHeaders = _.map(_.keys(rawRequestHeaders), requestHeaderKey => {
+    const requestHeaders = _.map(_.keys(rawRequestHeaders), requestHeaderKey => {
         return {
             key: requestHeaderKey.toLowerCase(),
             value: rawRequestHeaders[requestHeaderKey]
         }
     });
 
-    let varyByHeaderKeys = _.sortBy(lowerCase(varyByHeaders));
+    const varyByHeaderKeys = _.sortBy(lowerCase(varyByHeaders));
 
-    let filteredHeaders = _.compact(_.map(varyByHeaderKeys, varyByHeaderKey => {
-        let requestHeader = _.find(requestHeaders, requestHeader => { return requestHeader.key === varyByHeaderKey; });
+    const filteredHeaders = _.compact(_.map(varyByHeaderKeys, varyByHeaderKey => {
+        const requestHeader = _.find(requestHeaders, requestHeader => { return requestHeader.key === varyByHeaderKey; });
         return requestHeader ? `${requestHeader.key}=${requestHeader.value.replace(/(\s+)/gi, '')}` : null;
     }));
 
@@ -36,10 +53,10 @@ let getHeaders = (rawRequestHeaders, varyByHeaders) => {
 
 module.exports = {
   generateCacheKey: (req, options) => {
-      let partition = options.partition || 'default';
-      let method    = req.route.method.toLowerCase();
-      let path      = req.url.path.toLowerCase();
-      let headers   = getHeaders(req.headers, options.varyByHeaders);
+      const partition = options.partition || 'default';
+      const method    = req.route.method.toLowerCase();
+      const path      = normaliseUrl(req.url);
+      const headers   = normaliseHeaders(req.headers, options.varyByHeaders);
 
       return _.compact([partition, method, path, headers]).join('|');
   }
