@@ -1,7 +1,6 @@
 'use strict';
 
-const _   = require('underscore');
-const url = require('url');
+const _ = require('underscore');
 
 const lowerCase = array => {
     const result = [];
