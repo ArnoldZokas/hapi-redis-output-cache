@@ -70,10 +70,10 @@ Output cache metadata is injected into each request and can be access via `req.o
 ## Release History
 - **v3.0.0** (2015-04-XX)
     - breaking changes:
-        require node >4
-        require hapi >8
-        new key generation algorithm will invalidate existing keys
-
+        - require node >4
+        - require hapi >8
+        - new key generation algorithm will invalidate existing keys
+        - removed onError hook
 - **v2.0.2** (2015-07-22)
     - fixed caching bug
 - **v2.0.1** (2015-07-13)
