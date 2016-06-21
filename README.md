@@ -40,7 +40,6 @@ server.register([
 - **staleIn** - number of seconds until the cached response will be considered stale and marked for regeneration
 - **expiresIn** - number of seconds until the cached response will be purged from Redis
 - **onCacheMiss** - *(optional)* `function(req, reply){ ... }` invoked on each cache write; useful for responding to cache miss events
-- **onError** - *(optional)* function which is invoked on each Redis error
 
 ## Route Settings
 

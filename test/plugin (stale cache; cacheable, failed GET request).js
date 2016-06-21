@@ -19,7 +19,7 @@ describe('plugin (stale cache; cacheable, failed GET request)', () => {
             ttl: 45
         });
 
-        fauxServer(server => {
+        fauxServer(null, server => {
             server.request({
                 url: '/cacheable-failed-request',
                 headers: {
@@ -81,5 +81,6 @@ describe('plugin (stale cache; cacheable, failed GET request)', () => {
 //     - ✔ does it avoid writing to cache
 //     - ✔ does it avoid executing onCacheMiss handler?
 // - offline cache
-//     - does it handle disconnect?
-//     - does it handle reconnect?
+//     - does it handle start-time disconnect?
+//     - does it handle runtime disconnect?
+//     - does it handle runtime reconnect?

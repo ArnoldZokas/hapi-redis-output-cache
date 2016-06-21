@@ -18,7 +18,7 @@ describe('plugin (stale cache; cacheable, successful GET request)', () => {
             }
         });
 
-        fauxServer(server => {
+        fauxServer(null, server => {
             server.request({
                 url: '/cacheable-successful-request/1',
                 headers: {

@@ -83,12 +83,4 @@ describe('plugin option validation', () => {
             });
         });
     });
-
-    describe('given invalid onError handler', () => {
-        it('should return error', () => {
-            plugin.register(null, { host: '127.0.0.1', staleIn: 1, expiresIn: 1, onError: '' }, err => {
-                expect(err.toString()).to.equal('ValidationError: child "onError" fails because ["onError" must be a Function]');
-            });
-        });
-    });
 });

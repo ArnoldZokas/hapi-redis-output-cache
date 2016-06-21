@@ -9,6 +9,5 @@ module.exports = {
     varyByHeaders: joi.array(),
     staleIn: joi.number().min(1).required(),
     expiresIn: joi.number().min(1).required(),
-    onCacheMiss: joi.func(),
-    onError: joi.func()
+    onCacheMiss: joi.func()
 };

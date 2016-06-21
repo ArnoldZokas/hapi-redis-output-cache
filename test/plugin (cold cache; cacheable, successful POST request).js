@@ -10,7 +10,7 @@ describe('plugin (cold cache; cacheable, successful POST request)', () => {
     before(next => {
         redisHelper.reset();
 
-        fauxServer(server => {
+        fauxServer(null, server => {
             server.request({
                 method: 'POST',
                 url: '/cacheable-successful-request',

@@ -10,7 +10,7 @@ describe('plugin (cold cache; non-cacheable, successful GET request)', () => {
     before(next => {
         redisHelper.reset();
 
-        fauxServer(server => {
+        fauxServer(null, server => {
             server.request({
                 url: '/non-cacheable-successful-request',
                 headers: {

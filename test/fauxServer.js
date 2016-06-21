@@ -3,9 +3,16 @@
 const hapi = require('hapi');
 let fauxEndpoints;
 
-module.exports = next => {
+module.exports = (options, next) => {
     const server = new hapi.Server();
     server.connection({ port: 3000 });
+
+    options = options || {};
+    options.redis = options.redis || {};
+
+    server.on('log', event => {
+        console.log(event);
+    });
 
     server.route({
         method: "GET",
@@ -60,12 +67,12 @@ module.exports = next => {
         {
             register: require('../index'),
             options: {
-                partition: 'test',
-                host: '127.0.0.1',
-                port: 1234,
+                partition: options.redis.partition || 'test',
+                host: options.redis.host || '127.0.0.1',
+                port: options.redis.port || 1234,
                 staleIn: 30,
                 expiresIn: 60,
-                onCacheMiss: function(req, reply) { reply.request.context = { cacheMiss: true } }
+                onCacheMiss: options.onCacheMiss || function(req, reply) { reply.request.context = { cacheMiss: true } }
             }
         }
     ],

@@ -10,7 +10,7 @@ describe('plugin (cold cache; cacheable, failed GET request)', () => {
     before(next => {
         redisHelper.reset();
 
-        fauxServer(server => {
+        fauxServer(null, server => {
             server.request({
                 url: '/cacheable-failed-request',
                 headers: {
