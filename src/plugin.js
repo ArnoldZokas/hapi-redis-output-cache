@@ -42,6 +42,7 @@ exports.register = function (plugin, options, next) {
                 try {
                     client.get(cacheKey, (err, data) => {
                         if(err) {
+                            plugin.log('cache', options.error);
                             return reply.continue();
                         }
 
