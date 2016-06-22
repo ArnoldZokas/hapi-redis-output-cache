@@ -50,8 +50,7 @@ exports.register = function (plugin, options, next) {
                             const cachedValue = JSON.parse(data);
                             req.outputCache = {
                                 data: cachedValue,
-                                isStale: true,
-                                originalHandler: req.route.settings.handler
+                                isStale: true
                             };
 
                             const currentTime = Math.floor(new Date() / 1000);
@@ -59,16 +58,17 @@ exports.register = function (plugin, options, next) {
                             if(cachedValue.expiresOn > currentTime) {
                                 req.outputCache.isStale = false;
 
-                                req.route.settings.handler = function(req, reply) {
-                                    const response  = reply(cachedValue.payload);
-                                    response.code(cachedValue.statusCode);
+                                const response = reply(cachedValue.payload);
+                                response.code(cachedValue.statusCode);
 
-                                    const keys = Object.keys(cachedValue.headers);
-                                    for(let i = 0; i < keys.length; i++) {
-                                        const key = keys[i];
-                                        response.header(key, cachedValue.headers[key]);
-                                    }
-                                };
+                                const keys = Object.keys(cachedValue.headers);
+                                for(let i = 0; i < keys.length; i++) {
+                                    const key = keys[i];
+                                    response.header(key, cachedValue.headers[key]);
+                                }
+
+                                response.hold();
+                                response.send();
                             }
                         }
 
@@ -111,7 +111,6 @@ exports.register = function (plugin, options, next) {
             }
 
             if(req.outputCache && req.outputCache.isStale === false) {
-                req.route.settings.handler = req.outputCache.originalHandler;
                 return reply.continue();
             }
 
