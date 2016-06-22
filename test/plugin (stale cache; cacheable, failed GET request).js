@@ -50,7 +50,7 @@ describe('plugin (stale cache; cacheable, failed GET request)', () => {
 
     it('should not set ttl', next => {
         redisHelper.ttl(response.request, reply => {
-            expect(reply).to.be(45);
+            expect(reply).to.be.greaterThan(43);
             next();
         });
     });

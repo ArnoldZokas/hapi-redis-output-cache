@@ -65,7 +65,7 @@ describe('plugin (cold cache; cacheable, successful GET request)', () => {
 
     it('should set ttl', next => {
         redisHelper.ttl(response.request, reply => {
-            expect(reply).to.be(60);
+            expect(reply).to.be.greaterThan(58);
             next();
         });
     });

@@ -93,6 +93,8 @@ module.exports = (options, next) => {
             }
         };
 
-        return next(fauxEndpoints);
+        setTimeout(() => {
+            return next(fauxEndpoints);
+        }, 50);
     });
 };
