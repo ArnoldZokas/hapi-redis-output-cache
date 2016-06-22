@@ -27,13 +27,12 @@
   },
   "homepage": "https://github.com/ArnoldZokas/hapi-redis-output-cache",
   "dependencies": {
-    "hoek": "^4.0.1",
     "joi": "^8.4.2",
     "redis": "^2.6.2",
     "underscore": "^1.8.3"
   },
   "devDependencies": {
-    "eslint": "^2.12.0",
+    "eslint": "^2.13.1",
     "eslint-config-defaults": "^9.0.0",
     "expect.js": "^0.3.1",
     "hapi": "^13.4.1"
