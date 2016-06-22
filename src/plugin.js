@@ -125,7 +125,6 @@ exports.register = function (plugin, options, next) {
 
             if(client.connected ) {
                 try {
-                    console.log('SET');
                     client.setex(cacheKey, options.expiresIn, JSON.stringify(cacheValue));
                     options.onCacheMiss(req, reply);
                 } catch (err) {
@@ -135,7 +134,7 @@ exports.register = function (plugin, options, next) {
 
             return reply.continue();
         });
-
-        next();
     });
+
+    next();
 };
