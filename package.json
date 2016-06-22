@@ -8,7 +8,8 @@
   },
   "main": "index.js",
   "scripts": {
-    "test": "eslint ./ && vagrant up && mocha --reporter spec --timeout 5s"
+    "lint": "eslint ./",
+    "test": "npm run lint && vagrant up && mocha --reporter spec --timeout 5s"
   },
   "repository": {
     "type": "git",
