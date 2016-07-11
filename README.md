@@ -68,7 +68,7 @@ Output cache metadata is injected into each request and can be access via `req.o
 - **data**: object representing cached response (available even when stale)
 
 ## Release History
-- **v3.0.0** (2015-04-XX)
+- **v3.0.0** (2015-07-11)
     - breaking changes:
         - require node >4
         - require hapi >8
