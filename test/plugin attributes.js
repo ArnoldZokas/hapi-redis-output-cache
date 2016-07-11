@@ -9,6 +9,6 @@ describe('plugin attributes', () => {
     });
 
     it('should contain version', () => {
-        expect(plugin.register.attributes.version).to.equal('3.0.0-alpha.4');
+        expect(plugin.register.attributes.version).to.equal('3.0.0');
     });
 });
