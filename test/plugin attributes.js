@@ -1,14 +1,14 @@
 'use strict';
 
-var expect = require('expect.js'),
-    plugin = require('../index.js');
+const expect = require('expect.js');
+const plugin = require('../index.js');
 
-describe('plugin attributes', function() {
-    it('should contain name', function () {
+describe('plugin attributes', () => {
+    it('should contain name', () => {
         expect(plugin.register.attributes.name).to.equal('hapi-redis-output-cache');
     });
 
-    it('should contain version', function () {
-        expect(plugin.register.attributes.version).to.equal('2.0.2');
+    it('should contain version', () => {
+        expect(plugin.register.attributes.version).to.equal('3.0.0-alpha.4');
     });
 });

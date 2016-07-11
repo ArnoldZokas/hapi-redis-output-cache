@@ -1,140 +1,141 @@
 'use strict';
 
-var joi = require('joi');
-var hoek = require('hoek');
-
-/* jshint -W106 */
-var redisOptions = { retry_max_delay: 15000 };
-/* jshint +W106 */
+const joi                = require('joi');
+const cacheKeyGenerator  = require('./cacheKeyGenerator');
 
 exports.register = function (plugin, options, next) {
-    var validation = joi.validate(options, require('./schema'));
+    const validation = joi.validate(options, require('./schema'));
+
     if(validation.error) {
         return next(validation.error);
     }
 
-    var routeDefaults = {
-      varyByHeaders: options.varyByHeaders,
-      staleIn: options.staleIn,
-      expiresIn: options.expiresIn,
-      partition: options.partition
-    };
+    const client = require('redis').createClient({
+        host: options.host,
+        port: options.port || 6379,
+        retry_strategy: function (options) {
+            const reconnectAfter = Math.min(Math.pow(options.attempt, 2) * 100, 10000);
+            plugin.log('cache', `${options.error}. Attemting to reconnect in ${reconnectAfter}ms.`);
 
-    var redis = require('redis').createClient(options.port || 6379, options.host, redisOptions);
-    redis.on('error', options.onError || function() {});
-
-    var isCacheable = function(req) {
-        if(req.route.method !== 'get') {
-            return false;
+            return reconnectAfter;
         }
-
-        var pluginSettings = req.route.settings.plugins['hapi-redis-output-cache'];
-
-        return pluginSettings ? pluginSettings.cacheable : false;
-    };
-
-    var getWhitelistedHeaders = function(requestHeaders, whitelist) {
-        if((whitelist || []).length === 0) {
-            return [];
-        }
-
-        var result = [];
-        Object.keys(requestHeaders).forEach(function(header) {
-            header = header.toLowerCase();
-
-            if(whitelist.indexOf(header) > -1) {
-                result.push(header + '=' + requestHeaders[header]);
-            }
-        });
-
-        return result;
-    };
-
-    var generateCacheKey = function(req, routeSettings) {
-        var method  = req.route.method,
-            path    = req.url.path.toLowerCase(),
-            headers = getWhitelistedHeaders(req.headers, routeSettings.varyByHeaders).join('&');
-
-        return [routeSettings.partition, method, path, headers].join('|');
-    };
-
-    plugin.ext('onPreHandler', function(req, reply) {
-        req.outputCache = req.outputCache || {
-            isStale: true,
-            data: null
-        };
-
-        if(isCacheable(req) === false) {
-            return reply.continue();
-        }
-
-        if(redis.connected === false) {
-            return reply.continue();
-        }
-
-        var routeSettings = hoek.applyToDefaults(routeDefaults, req.route.settings.plugins['hapi-redis-output-cache']);
-        var cacheKey = generateCacheKey(req, routeSettings);
-
-        redis.get(cacheKey, function(err, data) {
-            if(err) {
-                return reply.continue();
-            }
-
-            if(data) {
-                var cachedValue = JSON.parse(data);
-                var currentTime = Math.floor(new Date() / 1000);
-                req.outputCache.data = cachedValue;
-
-                if(cachedValue.expiresOn > currentTime) {
-                    req.outputCache.isStale = false;
-
-                    var response  = reply(cachedValue.payload);
-                    response.code(cachedValue.statusCode);
-
-                    var keys = Object.keys(cachedValue.headers);
-                    for(var i = 0; i < keys.length; i++) {
-                        var key = keys[i];
-                        response.header(key, cachedValue.headers[key]);
-                    }
-
-                    return;
-                }
-            }
-
-            return reply.continue();
-        });
     });
 
-    plugin.ext('onPreResponse', function(req, reply) {
-        if(redis.connected === false) {
+    client.on('error', err => {
+        plugin.log('cache', err);
+    });
+
+    client.on('ready', () => {
+        plugin.log('cache', 'Connected.');
+    });
+
+    plugin.ext('onPreHandler', (req, reply) => {
+        const routeOptions = req.route.settings.plugins['hapi-redis-output-cache'] || {};
+        if(routeOptions.isCacheable !== true) {
             return reply.continue();
         }
 
-        if(isCacheable(req) === false) {
+        if(req.route.method !== 'get') {
             return reply.continue();
         }
 
-        if(Math.floor(req.response.statusCode / 100) === 5) {
+        const cacheKey = cacheKeyGenerator.generateCacheKey(req, options);
+
+        if(client.connected) {
+            try {
+                client.get(cacheKey, (err, data) => {
+                    if(err) {
+                        plugin.log('cache', options.error);
+                        return reply.continue();
+                    }
+
+                    if(data) {
+                        const cachedValue = JSON.parse(data);
+                        req.outputCache = {
+                            data: cachedValue,
+                            isStale: true
+                        };
+
+                        const currentTime = Math.floor(new Date() / 1000);
+
+                        if(cachedValue.expiresOn > currentTime) {
+                            req.outputCache.isStale = false;
+
+                            const response = reply(cachedValue.payload);
+                            response.code(cachedValue.statusCode);
+
+                            const keys = Object.keys(cachedValue.headers);
+                            for(let i = 0; i < keys.length; i++) {
+                                const key = keys[i];
+                                response.header(key, cachedValue.headers[key]);
+                            }
+
+                            response.hold();
+                            response.send();
+                        }
+                    }
+
+                    return reply.continue();
+                });
+            } catch (err) {
+                plugin.log('cache', `Unable to perform GET on ${options.host}:${options.port} for key ${cacheKey}. Redis returned: ${err}`);
+                return reply.continue();
+            }
+        } else {
+            return reply.continue();
+        }
+    });
+
+    plugin.ext('onPreResponse', (req, reply) => {
+        const routeOptions = req.route.settings.plugins['hapi-redis-output-cache'] || {};
+        if(routeOptions.isCacheable !== true) {
             return reply.continue();
         }
 
-        if(req.outputCache && req.outputCache.isStale && req.response.statusCode) {
-            options.onCacheMiss(req);
-
-            var routeSettings = hoek.applyToDefaults(routeDefaults, req.route.settings.plugins['hapi-redis-output-cache']);
-
-            var cacheValue = {
-                statusCode: req.response.statusCode,
-                headers: req.response.headers,
-                payload: req.response.source,
-                expiresOn: Math.floor(new Date() / 1000) + routeSettings.staleIn
-            };
-
-            var cacheKey = generateCacheKey(req, routeSettings);
-            redis.setex(cacheKey, routeSettings.expiresIn, JSON.stringify(cacheValue));
+        if(req.route.method !== 'get') {
+            return reply.continue();
         }
 
-        reply.continue();
+        if(req.response.statusCode !== 200) {
+            if (req.response.statusCode >= 500 && req.response.statusCode < 600 && req.outputCache && req.outputCache.data) {
+                req.response.statusCode = req.outputCache.data.statusCode;
+                req.response.headers['content-type'] = 'application/json; charset=utf-8';
+
+                const keys = Object.keys(req.outputCache.data.headers);
+                for(let i = 0; i < keys.length; i++) {
+                    const key = keys[i];
+                    req.response.headers[key] = req.outputCache.data.headers[key];
+                }
+
+                req.response.source = req.outputCache.data.payload;
+            }
+
+            return reply.continue();
+        }
+
+        if(req.outputCache && req.outputCache.isStale === false) {
+            return reply.continue();
+        }
+
+        const cacheKey = cacheKeyGenerator.generateCacheKey(req, options);
+
+        const cacheValue = {
+            statusCode: req.response.statusCode,
+            headers: req.response.headers,
+            payload: req.response.source,
+            expiresOn: Math.floor(new Date() / 1000) + options.staleIn
+        };
+
+        if(client.connected) {
+            try {
+                client.setex(cacheKey, options.expiresIn, JSON.stringify(cacheValue));
+                options.onCacheMiss(req, reply);
+            } catch (err) {
+                plugin.log('cache', `Unable to perform SETEX on ${options.host}:${options.port} for key ${cacheKey}. Redis returned: ${err}`);
+            }
+        }
+
+        return reply.continue();
     });
 
     next();
