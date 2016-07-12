@@ -1,7 +1,7 @@
 # hapi-redis-output-cache
 > Redis-backed output cache plugin for Hapi
 
-[![Build Status](https://semaphoreci.com/api/v1/ArnoldZokas/ot-hapi-request-metrics/branches/master/shields_badge.svg)](https://semaphoreci.com/ArnoldZokas/ot-hapi-request-metrics)[![Dependency Status](https://david-dm.org/ArnoldZokas/hapi-redis-output-cache.svg)](https://david-dm.org/ArnoldZokas/hapi-redis-output-cache) [![NPM version](https://badge.fury.io/js/hapi-redis-output-cache.svg)](http://badge.fury.io/js/hapi-redis-output-cache)
+[![Build Status](https://semaphoreci.com/api/v1/ArnoldZokas/hapi-redis-output-cache/branches/master/shields_badge.svg)](https://semaphoreci.com/ArnoldZokas/hapi-redis-output-cache)[![Dependency Status](https://david-dm.org/ArnoldZokas/hapi-redis-output-cache.svg)](https://david-dm.org/ArnoldZokas/hapi-redis-output-cache) [![NPM version](https://badge.fury.io/js/hapi-redis-output-cache.svg)](http://badge.fury.io/js/hapi-redis-output-cache)
 
 [![NPM](https://nodei.co/npm/hapi-redis-output-cache.png?downloads=true&stars=true)](https://nodei.co/npm/hapi-redis-output-cache)
 
