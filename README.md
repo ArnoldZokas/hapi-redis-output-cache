@@ -35,7 +35,7 @@ server.register([
 ## Configuration
 - **host** - hostname or IP address of the Redis server
 - **port** - *(optional)* port of the Redis server; defaults to 6379
-- **varyByHeaders** - *(optional)* an array of headers to be used for generating cache key; defaults no none
+- **varyByHeaders** - *(optional)* an array of headers to be used for generating cache key; defaults to none
 - **partition** - *(optional)* string to prefix cache keys with, useful for shared redis instances
 - **staleIn** - number of seconds until the cached response will be considered stale and marked for regeneration
 - **expiresIn** - number of seconds until the cached response will be purged from Redis
@@ -70,8 +70,8 @@ Output cache metadata is injected into each request and can be access via `req.o
 ## Release History
 - **v3.0.0** (2015-07-11)
     - breaking changes:
-        - require node >4
-        - require hapi >8
+        - require node >=4
+        - require hapi >=9
         - new key generation algorithm will invalidate existing keys
         - removed onError hook
 - **v2.0.2** (2015-07-22)
